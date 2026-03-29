@@ -206,8 +206,7 @@ with col1:
                 st.session_state.level=min(
                 st.session_state.level+1,3)
 
-            st.session_state.question=
-            get_question(st.session_state.level)
+            st.session_state.question= get_question(st.session_state.level)
 
         else:
 
@@ -221,8 +220,7 @@ with col2:
 
     if st.button("Next"):
 
-        st.session_state.question=
-        get_question(st.session_state.level)
+        st.session_state.question= get_question(st.session_state.level)
 
 # PROGRESS BAR
 
