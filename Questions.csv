@@ -1,0 +1,74 @@
+question,option1,option2,option3,option4,answer,hint,topic,level
+Which particles carry electricity in electrolysis?,Electrons,Ions,Atoms,Molecules,Ions,Electrolytes conduct through ions,Ion movement,1
+Which ion moves to the cathode?,Na+,Cl-,OH-,SO4,Na+,Cathode attracts positive ions,Ion movement,1
+Which ion moves to the anode?,H+,Na+,Cl-,K+,Cl-,Anode attracts negative ions,Ion movement,1
+What charge do cations carry?,Positive,Negative,Neutral,Variable,Positive,Cations are positive,Ion movement,1
+What charge do anions carry?,Positive,Negative,Neutral,Both,Negative,Anions are negative,Ion movement,1
+Which electrode is negative?,Anode,Cathode,Cell,Wire,Cathode,Cathode is negative,Electrodes,1
+Which electrode is positive?,Cathode,Anode,Wire,Salt bridge,Anode,Anode is positive,Electrodes,1
+Where does reduction occur?,Anode,Cathode,Electrolyte,Wire,Cathode,Reduction is gain of electrons,Electrodes,1
+Where does oxidation occur?,Cathode,Anode,Wire,Cell,Anode,Oxidation is loss of electrons,Electrodes,1
+What is electrolysis?,Heating reaction,Chemical decomposition by electricity,Freezing process,Neutralisation,Chemical decomposition by electricity,Definition question,Basics,1
+Which gas forms at cathode of water?,Oxygen,Hydrogen,Nitrogen,Chlorine,Hydrogen,Hydrogen forms at cathode,Products,1
+Which gas forms at anode of water?,Hydrogen,Oxygen,Helium,Carbon,Oxygen,Oxygen forms at anode,Products,1
+What type of reaction occurs at cathode?,Oxidation,Reduction,Combustion,Neutralisation,Reduction,Gain electrons,Electrodes,1
+What type of reaction occurs at anode?,Reduction,Oxidation,Evaporation,Melting,Oxidation,Loss electrons,Electrodes,1
+Which ion is positive?,Cl-,OH-,Na+,NO3-,Na+,Positive charge,Ion movement,1
+Which ion is negative?,Na+,K+,H+,Cl-,Cl-,Negative charge,Ion movement,1
+Electrolytes conduct because of?,Free electrons,Ions,Atoms,Heat,Ions,Ionic movement,Basics,1
+Which substance is electrolyte?,Sugar solution,Salt solution,Alcohol,Oil,Salt solution,Ionic compounds conduct,Basics,1
+Which is non electrolyte?,NaCl solution,Sugar solution,HCl solution,KOH,Sugar solution,No ions,Basics,1
+Cathode attracts?,Cations,Anions,Atoms,Molecules,Cations,Opposite charges attract,Ion movement,1
+Anode attracts?,Cations,Anions,Electrons,Atoms,Anions,Opposite charges attract,Ion movement,1
+Reduction means?,Loss electrons,Gain electrons,Heat gain,Energy loss,Gain electrons,Reduction definition,Electrodes,2
+Oxidation means?,Gain electrons,Loss electrons,Gain proton,Gain heat,Loss electrons,Oxidation definition,Electrodes,2
+What happens to Na+ at cathode?,Oxidised,Reduced,Neutralised,Evaporated,Reduced,Gain electron,Discharge,2
+What happens to Cl- at anode?,Reduced,Oxidised,Frozen,Boiled,Oxidised,Loses electron,Discharge,2
+Which is discharged first?,Most reactive,Least reactive,Random,Neutral,Least reactive,Electrochemical rule,Discharge,2
+In NaCl solution what forms at cathode?,Na,H2,Cl2,O2,H2,Hydrogen preferred,Products,2
+In NaCl solution what forms at anode?,Oxygen,Hydrogen,Chlorine,Sodium,Chlorine,Halides discharge,Products,2
+Electrolysis requires?,Battery only,Electrolyte only,Both,None,Both,Needs circuit,Basics,2
+What carries current in wire?,Ions,Electrons,Atoms,Protons,Electrons,Metal conduction,Basics,2
+What carries current in electrolyte?,Protons,Ions,Atoms,Molecules,Ions,Ionic conduction,Basics,2
+Which electrode gains mass?,Anode,Cathode,Both,None,Cathode,Metal deposited,Products,2
+Which electrode loses mass?,Cathode,Anode,Both,None,Anode,Metal dissolves,Products,2
+Product of CuSO4 electrolysis at cathode?,Copper,Oxygen,Hydrogen,Sulfur,Copper,Copper deposits,Products,2
+Colour of CuSO4 fades because?,Copper removed,Oxygen added,Water added,Heat,Copper removed,Cu2+ reduced,Products,2
+What is electrolyte?,Metal,Solution with ions,Gas,Acid,Solution with ions,Definition,Basics,2
+What is electrode?,Insulator,Conductor,Gas,Acid,Conductor,Allows current,Electrodes,2
+Example of anion?,Na+,K+,Cl-,Ca2+,Cl-,Negative ion,Ion movement,2
+Example of cation?,Cl-,SO4,H+,NO3,H+,Positive ion,Ion movement,2
+Which gas relights glowing splint?,Hydrogen,Oxygen,Nitrogen,Chlorine,Oxygen,Oxygen test,Products,2
+Which gas gives pop sound?,Oxygen,Hydrogen,Chlorine,Nitrogen,Hydrogen,Hydrogen test,Products,2
+Electrolysis of water produces ratio?,1:1,2:1,3:1,1:2,2:1,Hydrogen double,Products,2
+Electrolysis is example of?,Physical change,Chemical change,Both,None,Chemical change,New substances,Basics,2
+Energy change type?,Electrical to chemical,Chemical to heat,Light to sound,Heat to light,Electrical to chemical,Energy conversion,Basics,2
+What is brine?,NaCl solution,CuSO4,KNO3,HCl,NaCl solution,Definition,Basics,2
+Gas from brine anode?,Hydrogen,Oxygen,Chlorine,Nitrogen,Chlorine,Halogen discharge,Products,3
+Gas from brine cathode?,Oxygen,Hydrogen,Chlorine,Sodium,Hydrogen,Hydrogen forms,Products,3
+Why sodium not discharged?,Too reactive,Too heavy,Too light,Too slow,Too reactive,Electrochemical series,Discharge,3
+Electrochemical series shows?,Reactivity,Colour,Mass,Shape,Reactivity,Reactivity trend,Discharge,3
+Which discharges first?,Ag+,Na+,K+,Ca2+,Ag+,Least reactive,Discharge,3
+Which metal plates out?,Copper,Oxygen,Hydrogen,Nitrogen,Copper,Reduction,Products,3
+Which is oxidation example?,Gain e-,Loss e-,Gain H,Gain O,Loss e-,Oxidation definition,Electrodes,3
+Which is reduction example?,Loss e-,Gain e-,Lose H,Lose O,Gain e-,Reduction definition,Electrodes,3
+Half equation at cathode?,H+ + e → H2,H2→2H+,O→O2,H→H+,H+ + e → H2,Reduction half eq,Electrodes,3
+Half equation anode?,Cl-→Cl2+e,H2→H+,Na→Na+,O2→O,Cl-→Cl2+e,Oxidation,Electrodes,3
+Why inert electrode used?,Cheap,Does not react,Heavy,Light,Does not react,Graphite inert,Electrodes,3
+Example inert electrode?,Iron,Copper,Graphite,Zinc,Graphite,Inert material,Electrodes,3
+Example reactive electrode?,Copper,Graphite,Platinum,Carbon,Copper,Can react,Electrodes,3
+Electroplating purpose?,Decorate,Clean,Heat,Cool,Decorate,Coating metal,Applications,3
+Metal coating process?,Electrolysis,Combustion,Boiling,Freezing,Electrolysis,Electroplating,Applications,3
+Why electrolyte molten?,Allow ions,Freeze ions,Remove ions,None,Allow ions,Ions must move,Basics,3
+Why solid NaCl no conduction?,No ions move,Too cold,Too heavy,Too light,No ions move,Ions fixed,Basics,3
+What happens at cathode Cu2+?,Reduced,Oxidised,Burned,Frozen,Reduced,Gains electrons,Discharge,3
+Which increases solution pH?,OH-,H+,Na+,Cl-,OH-,Alkaline ions,Products,3
+Which decreases pH?,OH-,Na+,H+,K+,H+,Acidic ions,Products,3
+What colour chlorine?,Green,Blue,Yellow,Red,Green,Chlorine gas,Products,3
+Which gas bleaches?,Hydrogen,Oxygen,Chlorine,Nitrogen,Chlorine,Bleaching effect,Products,3
+Industrial use electrolysis?,Extraction,Painting,Washing,Cooking,Extraction,Aluminium extraction,Applications,3
+Aluminium extracted from?,Bauxite,Iron ore,Coal,Sand,Bauxite,Ore source,Applications,3
+Cryolite purpose?,Lower melting,Raise melting,Colour,None,Lower melting,Energy saving,Applications,3
+Electrolysis used to?,Extract metal,Boil water,Cool gas,Heat oil,Extract metal,Main use,Applications,3
+Which ion reduced easiest?,Na+,K+,Ag+,Ca2+,Ag+,Least reactive,Discharge,3
+Which ion oxidised easiest?,Cl-,SO4,NO3,CO3,Cl-,Halide discharge,Discharge,3
