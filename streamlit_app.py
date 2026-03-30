@@ -7,7 +7,7 @@ st.set_page_config(page_title="Electrolysis Game",
 layout="wide")
 
 # LOAD QUESTIONS
-df=pd.read_csv("questions.csv")
+df=pd.read_csv("Questions.csv")
 
 # DATABASE
 conn=sqlite3.connect("students.db",
