@@ -6,7 +6,7 @@ import sqlite3
 st.set_page_config(page_title="Electrolysis Adventure", layout="wide")
 
 # LOAD QUESTIONS
-df = pd.read_csv("Questions.csv")
+df = pd.read_csv("electrolysis_questions.csv")
 
 # CLEAN COLUMNS (prevents optionA errors)
 df.columns = df.columns.str.strip().str.lower()
