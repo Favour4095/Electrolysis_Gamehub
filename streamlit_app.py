@@ -18,7 +18,7 @@ if "weak_topic" not in st.session_state: st.session_state.weak_topic = "None"
 if "exam_started" not in st.session_state: st.session_state.exam_started = False
 
 # --- LOAD QUESTION BANK ---
-questions_df = pd.read_csv("questions.csv")  # CSV should have: question,option1,option2,option3,option4,answer,topic,level
+questions_df = pd.read_csv("Questions.csv")  # CSV should have: question,option1,option2,option3,option4,answer,topic,level
 
 # --- PLAYER PANEL ---
 st.sidebar.title("Player")
