@@ -159,8 +159,7 @@ min(st.session_state.energy/200,1.0))
 
 # LEVEL UP
 
-if st.session_state.energy>=
-(st.session_state.level*100):
+if st.session_state.energy>= (st.session_state.level*100):
 
     st.session_state.level+=1
 
