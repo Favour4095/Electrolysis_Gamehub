@@ -85,7 +85,7 @@ st.sidebar.write("Badges:",badges)
 
 # MAIN GAME
 
-st.title("⚡ AI Electrolysis WAEC Learning Game")
+st.title("⚡ Electrolysis: WAEC Learning Game")
 
 q=st.session_state.question
 
@@ -142,8 +142,7 @@ st.progress(min(st.session_state.score/150,1.0))
 
 # ANALYTICS
 
-attempts=st.session_state.correct+
-st.session_state.mistakes
+attempts=st.session_state.correct+ st.session_state.mistakes
 
 accuracy=0
 
