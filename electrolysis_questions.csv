@@ -1,4 +1,4 @@
-level,topic,question,option1,option2,option3,option4,answer,hint
+level,topic,question,optionA,optionB,optionC,option4,answer,hint
 1,Anode & Cathode,In the electrolysis of molten sodium chloride which ion moves to the cathode?,Na+,Cl-,O2-,H+,Na+,Positive ions move to the cathode
 1,Anode & Cathode,In the same reaction which ion moves to the anode?,Na+,Cl-,O2-,H+,Cl-,Negative ions move to the anode
 1,Ion Discharge,When copper sulfate solution is electrolyzed which ion is discharged at the cathode?,Cu2+,SO42-,H+,O2-,Cu2+,Metal ions are deposited at the cathode
