@@ -1,157 +1,203 @@
 import streamlit as st
 import pandas as pd
 import random
+import sqlite3
 
-# -------------------------
-# PAGE CONFIG
-# -------------------------
-st.set_page_config(page_title="Electrolysis AI Tutor v7.1", layout="wide")
+st.set_page_config(page_title="Electrolysis AI Tutor v7.2", layout="wide")
 
 # -------------------------
 # LOAD QUESTIONS
 # -------------------------
-df = pd.read_csv("questions.csv")
+df = pd.read_csv("electrolysis_questions.csv")  # Use the CSV we just generated
+
+# -------------------------
+# DATABASE
+# -------------------------
+conn = sqlite3.connect("students.db", check_same_thread=False)
+cursor = conn.cursor()
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS students(
+    name TEXT,
+    score INTEGER,
+    accuracy REAL,
+    level INTEGER
+)
+""")
+conn.commit()
 
 # -------------------------
 # SESSION STATE
 # -------------------------
-if "score" not in st.session_state:
-    st.session_state.score = 0
-if "level" not in st.session_state:
-    st.session_state.level = 1
-if "lives" not in st.session_state:
-    st.session_state.lives = 3
-if "question_index" not in st.session_state:
-    st.session_state.question_index = 0
-if "qa_order" not in st.session_state:
-    st.session_state.qa_order = []
-if "completed_lab" not in st.session_state:
-    st.session_state.completed_lab = False
-if "answered_questions" not in st.session_state:
-    st.session_state.answered_questions = {}
+if "score" not in st.session_state: st.session_state.score = 0
+if "level" not in st.session_state: st.session_state.level = 1
+if "mistakes" not in st.session_state: st.session_state.mistakes = 0
+if "correct" not in st.session_state: st.session_state.correct = 0
+if "name" not in st.session_state: st.session_state.name = ""
+if "question_index" not in st.session_state: st.session_state.question_index = 0
+if "question_order" not in st.session_state: st.session_state.question_order = []
+if "current_question" not in st.session_state: st.session_state.current_question = None
+if "lives" not in st.session_state: st.session_state.lives = 3  # For lab drag-and-drop
 
 # -------------------------
-# SIDEBAR PROFILE
+# STUDENT PROFILE SIDEBAR
 # -------------------------
 st.sidebar.title("Student Profile")
-name = st.sidebar.text_input("Enter Your Name", "")
+name = st.sidebar.text_input("Student Name")
+st.session_state.name = name
 st.sidebar.write("Score:", st.session_state.score)
 st.sidebar.write("Level:", st.session_state.level)
 st.sidebar.write("Lives:", st.session_state.lives)
 
 # Badges
 badges = []
-if st.session_state.score >= 50:
-    badges.append("Bronze")
-if st.session_state.score >= 100:
-    badges.append("Silver")
-if st.session_state.score >= 150:
-    badges.append("Gold")
+if st.session_state.score >= 50: badges.append("Bronze")
+if st.session_state.score >= 100: badges.append("Silver")
+if st.session_state.score >= 150: badges.append("Gold")
 st.sidebar.write("Badges:", badges)
 
 # -------------------------
 # FUNCTIONS
 # -------------------------
-def get_lab_questions():
-    return df[df["level"] == 1].to_dict("records")
+def load_questions(level):
+    subset = df[df["level"] == level].reset_index(drop=True)
+    return subset
 
-def get_level_questions(level, num_questions=10):
-    qs = df[(df["level"] == level) & (df["type"] == "yaq")].sample(n=num_questions)
-    return qs.to_dict("records")
+def next_question():
+    if st.session_state.question_index < len(st.session_state.question_order)-1:
+        st.session_state.question_index += 1
+        st.session_state.current_question = st.session_state.question_order[st.session_state.question_index]
+
+def previous_question():
+    if st.session_state.question_index > 0:
+        st.session_state.question_index -= 1
+        st.session_state.current_question = st.session_state.question_order[st.session_state.question_index]
 
 def reset_level():
+    st.session_state.score = 0
+    st.session_state.correct = 0
+    st.session_state.mistakes = 0
+    st.session_state.lives = 3
     st.session_state.question_index = 0
-    st.session_state.answered_questions = {}
-    if st.session_state.level == 2:
-        st.session_state.qa_order = get_level_questions(2)
-    elif st.session_state.level == 3:
-        st.session_state.qa_order = get_level_questions(3)
-    else:
-        st.session_state.qa_order = []
+    st.session_state.question_order = load_questions(st.session_state.level).to_dict('records')
+    st.session_state.current_question = st.session_state.question_order[0]
 
 # -------------------------
-# LEVEL 1 - LAB (Drag and Drop)
+# INITIALIZE QUESTIONS
 # -------------------------
+if st.session_state.current_question is None or st.session_state.level_changed:
+    st.session_state.question_order = load_questions(st.session_state.level).to_dict('records')
+    random.shuffle(st.session_state.question_order)
+    st.session_state.current_question = st.session_state.question_order[0]
+    st.session_state.question_index = 0
+    st.session_state.level_changed = False
+
+q = st.session_state.current_question
+
+# -------------------------
+# MAIN GAME INTERFACE
+# -------------------------
+st.title("⚡ AI Electrolysis WAEC Learning Game")
+
+st.subheader(f"Level {st.session_state.level} - {q['topic']}")
+
+# Level 1: Drag-and-Drop style lab
 if st.session_state.level == 1:
-    st.title("⚡ Electrolysis Lab - Drag and Drop")
-    lab_qs = get_lab_questions()
-    for q in lab_qs:
-        st.subheader(q["topic"])
-        st.write(q["question"])
-        # Simulate drag and drop by selectbox for mobile
-        user_choice = st.selectbox("Select the correct item to drag:", [q["option1"], q["option2"], q["option3"], q["option4"]], key=q["question"])
-        if st.button(f"Submit: {q['question']}", key="submit_"+q["question"]):
-            if user_choice == q["answer"]:
-                st.success("Correct!")
+    st.write(q["question"])
+    # Create drag options for lab
+    options = ["H+", "Cl-", "Cu2+", "O2", "Na+", "OH-"]  # Example items for drag-and-drop
+    selected_items = st.multiselect("Select ions to drag to electrode:", options)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Submit Answer"):
+            correct_item = q["answer"]
+            if correct_item in selected_items:
+                st.success("Correct! 🎉")
                 st.session_state.score += 10
+                st.session_state.correct += 1
+                st.balloons()
+                next_question()
             else:
-                st.error("Wrong! Try again.")
+                st.error("Wrong! ❌")
+                st.session_state.mistakes += 1
                 st.session_state.lives -= 1
-    if st.button("Complete Lab"):
-        st.session_state.completed_lab = True
-        st.session_state.level = 2
-        reset_level()
-        st.experimental_rerun()
+                st.info("Hint: " + q["hint"])
+                if st.session_state.lives == 0:
+                    st.warning("Game Over! No more lives left.")
+                    reset_level()
+
+    with col2:
+        if st.button("Next Question"):
+            next_question()
+
+# Levels 2 & 3: WAEC-style quiz and Challenge
+else:
+    st.write(q["question"])
+    choice = st.radio("Choose answer:", [q["option1"], q["option2"], q["option3"], q["option4"]])
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Submit Answer"):
+            if choice == q["answer"]:
+                st.success("Correct! 🎉")
+                st.session_state.score += 10
+                st.session_state.correct += 1
+                st.balloons()
+                next_question()
+            else:
+                st.error("Wrong! ❌")
+                st.session_state.mistakes += 1
+                st.info("Hint: " + q["hint"])
+                next_question()
+
+    with col2:
+        if st.button("Next Question"):
+            next_question()
+
+# Previous button
+if st.button("Previous Question"):
+    previous_question()
 
 # -------------------------
-# LEVEL 2 & 3 - QUIZ
+# PROGRESS BAR & METRICS
 # -------------------------
-elif st.session_state.level in [2, 3]:
-    st.title(f"⚡ Electrolysis Quiz - Level {st.session_state.level}")
-    
-    # Load questions for level
-    if not st.session_state.qa_order:
-        reset_level()
-    
-    if st.session_state.question_index < len(st.session_state.qa_order):
-        q = st.session_state.qa_order[st.session_state.question_index]
-        st.subheader(f"Question {st.session_state.question_index + 1} of {len(st.session_state.qa_order)}")
-        st.write(q["question"])
-        
-        # Show options
-        user_choice = st.radio("Choose your answer:", [q["option1"], q["option2"], q["option3"], q["option4"]], key=q["question"])
-        
-        # Navigation buttons
-        col1, col2, col3 = st.columns([1,1,1])
-        with col1:
-            if st.button("Previous"):
-                if st.session_state.question_index > 0:
-                    st.session_state.question_index -= 1
-                    st.experimental_rerun()
-        with col2:
-            if st.button("Submit"):
-                if user_choice == q["answer"]:
-                    st.success("Correct!")
-                    if st.session_state.question_index not in st.session_state.answered_questions:
-                        st.session_state.score += 5
-                    st.session_state.answered_questions[st.session_state.question_index] = True
-                else:
-                    st.error(f"Wrong! Correct answer: {q['answer']}")
-                    st.session_state.lives -= 1
-                    st.session_state.answered_questions[st.session_state.question_index] = False
-        with col3:
-            if st.button("Next"):
-                if st.session_state.question_index < len(st.session_state.qa_order) - 1:
-                    st.session_state.question_index += 1
-                    st.experimental_rerun()
-                else:
-                    st.success("You have reached the end of this level!")
-                    if st.session_state.level == 2:
-                        st.session_state.level = 3
-                        reset_level()
-                        st.experimental_rerun()
-    else:
-        st.write("No more questions in this level!")
+attempts = st.session_state.correct + st.session_state.mistakes
+accuracy = 0
+if attempts > 0:
+    accuracy = (st.session_state.correct / attempts) * 100
+
+st.progress(min(st.session_state.score / 150, 1.0))
+st.subheader("AI Performance")
+st.metric("Accuracy", round(accuracy, 1))
+
+if accuracy < 50:
+    st.error("AI Advice: Revise ion movement")
+elif accuracy < 75:
+    st.warning("AI Advice: Practice discharge")
+else:
+    st.success("AI Advice: Ready for exam")
 
 # -------------------------
-# GAME OVER CONDITION
+# SAVE PROGRESS
 # -------------------------
-if st.session_state.lives <= 0:
-    st.error("Game Over! You have no more lives.")
-    if st.button("Restart Game"):
-        st.session_state.level = 1
-        st.session_state.score = 0
-        st.session_state.lives = 3
-        st.session_state.completed_lab = False
-        reset_level()
-        st.experimental_rerun()
+if st.button("Save Progress"):
+    cursor.execute("""
+    INSERT INTO students VALUES(?,?,?,?)
+    """, (st.session_state.name, st.session_state.score, accuracy, st.session_state.level))
+    conn.commit()
+    st.success("Progress Saved ✅")
+
+# -------------------------
+# TEACHER VIEW
+# -------------------------
+if st.checkbox("Teacher Dashboard"):
+    data = cursor.execute("SELECT * FROM students").fetchall()
+    st.write(data)
+
+# -------------------------
+# RESET
+# -------------------------
+if st.button("Restart Game"):
+    st.session_state.level_changed = True
+    reset_level()
+    st.experimental_rerun()
