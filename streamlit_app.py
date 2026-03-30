@@ -185,6 +185,87 @@ if st.button("Restart"):
     st.session_state.mistakes = 0
     st.session_state.correct = 0
     st.session_state.question = get_question(1)
+    st.experimental_rerun()# NEXT BUTTON
+with col2:
+    if st.button("Next"):
+        st.session_state.question = get_question(st.session_state.level)
+
+# -------------------------
+# PROGRESS BAR
+# -------------------------
+st.progress(min(st.session_state.score / 150, 1.0))
+
+# -------------------------
+# ANALYTICS
+# -------------------------
+attempts = st.session_state.correct + st.session_state.mistakes
+accuracy = 0
+if attempts > 0:
+    accuracy = (st.session_state.correct / attempts) * 100
+
+st.subheader("AI Performance")
+st.metric("Accuracy", round(accuracy, 1))
+
+# -------------------------
+# AI RECOMMENDATION
+# -------------------------
+if accuracy < 50:
+    st.error("AI Advice: Revise ion movement")
+elif accuracy < 75:
+    st.warning("AI Advice: Practice discharge")
+else:
+    st.success("AI Advice: Ready for exam")
+
+# -------------------------
+# LEARNING PANEL
+# -------------------------
+with st.expander("Review concept"):
+    st.write("Topic:", q["topic"])
+    st.write(q["hint"])
+
+# -------------------------
+# SAVE PROGRESS
+# -------------------------
+if st.button("Save Progress"):
+    cursor.execute("""
+        INSERT INTO students
+        VALUES(?,?,?,?)
+    """, (name, st.session_state.score, accuracy, st.session_state.level))
+    conn.commit()
+    st.success("Saved")
+
+# -------------------------
+# TEACHER DASHBOARD
+# -------------------------
+if st.checkbox("Teacher dashboard"):
+    data = cursor.execute("SELECT * FROM students").fetchall()
+    st.write(data)
+
+# -------------------------
+# EXAM MODE
+# -------------------------
+st.subheader("Exam Mode")
+if st.button("Start WAEC Practice Test"):
+    exam = df.sample(20)
+    exam_score = 0
+    for i, row in exam.iterrows():
+        ans = st.radio(row["question"],
+                       [row["option1"], row["option2"], row["option3"], row["option4"]],
+                       key=i)
+        if ans == row["answer"]:
+            exam_score += 1
+    if st.button("Submit Exam"):
+        st.write("Score:", exam_score, "/20")
+
+# -------------------------
+# RESET GAME
+# -------------------------
+if st.button("Restart"):
+    st.session_state.score = 0
+    st.session_state.level = 1
+    st.session_state.mistakes = 0
+    st.session_state.correct = 0
+    st.session_state.question = get_question(1)
     st.experimental_rerun()
 col1,col2=st.columns(2)
 
