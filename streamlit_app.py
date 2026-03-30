@@ -134,8 +134,7 @@ with col2:
 
     if st.button("Next"):
 
-        st.session_state.question=
-        get_question(st.session_state.level)
+        st.session_state.question= get_question(st.session_state.level)
 
 # PROGRESS BAR
 
