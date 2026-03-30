@@ -1,249 +1,105 @@
 import streamlit as st
-import random
 import pandas as pd
+import random
 
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="Electrolysis AI Tutor – Level Game", layout="wide")
+st.title("⚡ Electrolysis AI Tutor – Level Game")
 
-st.title("⚡ Electrolysis Quest")
+# --- SESSION STATE ---
+if "level" not in st.session_state: st.session_state.level = 1
+if "score" not in st.session_state: st.session_state.score = 0
+if "lives" not in st.session_state: st.session_state.lives = 3
+if "xp" not in st.session_state: st.session_state.xp = 0
+if "stars" not in st.session_state: st.session_state.stars = 0
+if "streak" not in st.session_state: st.session_state.streak = 0
+if "question_index" not in st.session_state: st.session_state.question_index = 0
+if "answers" not in st.session_state: st.session_state.answers = []
+if "question_history" not in st.session_state: st.session_state.question_history = []
 
-# PLAYER STATE
+# --- LOAD QUESTIONS ---
+questions_df = pd.read_csv("Questions.csv")  # question bank for YAQ and labs
+questions_df = questions_df.sample(frac=1).reset_index(drop=True)  # shuffle for random order
 
-if "xp" not in st.session_state:
-    st.session_state.xp=0
-
-if "lab" not in st.session_state:
-    st.session_state.lab=1
-
-if "lives" not in st.session_state:
-    st.session_state.lives=3
-
-if "stars" not in st.session_state:
-    st.session_state.stars=0
-
-if "exam_mode" not in st.session_state:
-    st.session_state.exam_mode=False
-
-if "exam_score" not in st.session_state:
-    st.session_state.exam_score=0
-
-if "exam_started" not in st.session_state:
-    st.session_state.exam_started=False
-
-if "weak_topic" not in st.session_state:
-    st.session_state.weak_topic="None"
-
-# LAB DATA
-
-labs={
-
-1:("Na⁺ goes to?","Cathode","Ion movement"),
-
-2:("Product at cathode CuSO4?",
-"Copper","Products"),
-
-3:("Which discharges first?",
-"Cu²⁺","Discharge"),
-
-4:("Gas at anode NaCl?",
-"Chlorine","Observation"),
-
-5:("Cathode product dilute acid?",
-"Hydrogen","WAEC")
-
-}
-
-# EXAM QUESTIONS
-
-exam_questions=[
-
-("Na⁺ goes to?",
-["Anode","Cathode"],
-"Cathode",
-"Ion movement"),
-
-("Product at cathode CuSO4?",
-["Copper","Oxygen"],
-"Copper",
-"Products"),
-
-("Gas at anode?",
-["Chlorine","Hydrogen"],
-"Chlorine",
-"Observation"),
-
-("Discharge first?",
-["Cu²⁺","H⁺"],
-"Cu²⁺",
-"Discharge")
-
-]
-
-# PLAYER PANEL
-
+# --- PLAYER PANEL ---
 st.sidebar.title("Player")
+st.sidebar.metric("Level", st.session_state.level)
+st.sidebar.metric("Score", st.session_state.score)
+st.sidebar.metric("Lives ❤️", st.session_state.lives)
+st.sidebar.metric("XP ⚡", st.session_state.xp)
+st.sidebar.metric("Stars ⭐", st.session_state.stars)
 
-st.sidebar.metric("Energy ⚡",
-st.session_state.xp)
+# --- FUNCTION TO DISPLAY QUESTION ---
+def display_question(index):
+    q = questions_df.iloc[index]
+    st.subheader(f"Question {index+1}")
+    st.write(f"Topic: {q['topic']}")
+    st.write(q["question"])
+    choice = st.radio("Select Answer", [q["option1"], q["option2"], q["option3"], q["option4"]],
+                      key=f"question_{index}")
+    return choice
 
-st.sidebar.metric("Lives ❤️",
-st.session_state.lives)
+# --- CURRENT QUESTION ---
+current_index = st.session_state.question_index
+choice = display_question(current_index)
 
-st.sidebar.metric("Stars ⭐",
-st.session_state.stars)
+col1, col2, col3 = st.columns(3)
 
-# MENU
+with col1:
+    if st.button("Previous"):
+        if st.session_state.question_index > 0:
+            st.session_state.question_index -= 1
+            st.rerun()
 
-mode=st.radio(
-
-"Select Mode",
-
-["Play Labs",
-"WAEC Exam",
-"Performance"])
-
-# LAB MODE
-
-if mode=="Play Labs":
-
-    question=labs[st.session_state.lab]
-
-    st.subheader(
-    "Lab "+str(
-    st.session_state.lab))
-
-    st.info(question[0])
-
-    ans=st.radio(
-
-    "Answer",
-
-    ["Anode",
-    "Cathode",
-    "Copper",
-    "Hydrogen",
-    "Chlorine",
-    "Cu²⁺"])
-
+with col2:
     if st.button("Submit"):
-
-        if ans==question[1]:
-
-            st.success("Correct")
-
-            st.balloons()
-
-            st.session_state.xp+=20
-
-            st.session_state.stars+=1
-
+        q = questions_df.iloc[current_index]
+        if choice == q["answer"]:
+            st.success("Correct!")
+            st.session_state.score += 10
+            st.session_state.xp += 10
+            st.session_state.streak += 1
+            st.session_state.stars += 1
         else:
+            st.error(f"Wrong! Hint: {q['topic']}")
+            st.session_state.lives -= 1
+            st.session_state.streak = 0
 
-            st.error("Wrong")
+        # Save answer in history
+        if len(st.session_state.answers) > current_index:
+            st.session_state.answers[current_index] = choice
+        else:
+            st.session_state.answers.append(choice)
+        st.session_state.question_history.append(current_index)
 
-            st.session_state.lives-=1
-
-            st.session_state.weak_topic= question[2]
-
+with col3:
     if st.button("Next"):
+        if current_index + 1 < len(questions_df):
+            st.session_state.question_index += 1
+            st.rerun()
+        else:
+            st.success("End of level!")
 
-        if st.session_state.lab<5:
+# --- LEVEL COMPLETION CHECK ---
+if st.session_state.score >= 50:  # threshold to pass level
+    st.balloons()
+    st.success(f"Level {st.session_state.level} Complete! 🎉")
+    st.session_state.level += 1
+    st.session_state.score = 0
+    st.session_state.question_index = 0
+    st.session_state.answers = []
+    st.rerun()
 
-            st.session_state.lab+=1
-
-        st.rerun()
-
-# EXAM MODE
-
-if mode=="WAEC Exam":
-
-    st.subheader("WAEC Practice Test")
-
-    score=0
-
-    answers=[]
-
-    for i,q in enumerate(exam_questions):
-
-        choice=st.radio(
-
-        q[0],
-
-        q[1],
-
-        key=i)
-
-        answers.append((choice,q))
-
-    if st.button("Submit Exam"):
-
-        weak=[]
-
-        for a in answers:
-
-            if a[0]==a[1][2]:
-
-                score+=1
-
-            else:
-
-                weak.append(a[1][3])
-
-        st.session_state.exam_score=score
-
-        if len(weak)>0:
-
-            st.session_state.weak_topic= random.choice(weak)
-
-        st.success(
-        "Score: "+str(score)+ "/"+str(len(exam_questions)))
-
-# PERFORMANCE MODE
-
-if mode=="Performance":
-
-    st.subheader("Performance Report")
-
-    st.metric("Exam Score",
-    st.session_state.exam_score)
-
-    st.metric("XP",
-    st.session_state.xp)
-
-    st.metric("Stars",
-    st.session_state.stars)
-
-    st.metric("Weak Topic",
-    st.session_state.weak_topic)
-
-    if st.session_state.exam_score<2:
-
-        st.error(
-        "Revise basics")
-
-    elif st.session_state.exam_score<3:
-
-        st.warning(
-        "Practice more")
-
-    else:
-
-        st.success(
-        "WAEC Ready")
-
-# GAME OVER
-
-if st.session_state.lives==0:
-
-    st.error("Game Over")
-
-    if st.button("Restart"):
-
-        st.session_state.xp=0
-
-        st.session_state.lab=1
-
-        st.session_state.lives=3
-
-        st.session_state.stars=0
-
+# --- GAME OVER ---
+if st.session_state.lives <= 0:
+    st.error("Game Over! 😢")
+    if st.button("Restart Game"):
+        st.session_state.level = 1
+        st.session_state.score = 0
+        st.session_state.lives = 3
+        st.session_state.xp = 0
+        st.session_state.stars = 0
+        st.session_state.streak = 0
+        st.session_state.question_index = 0
+        st.session_state.answers = []
+        st.session_state.question_history = []
         st.rerun()
