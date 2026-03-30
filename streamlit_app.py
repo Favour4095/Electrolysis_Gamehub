@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import random
 
 st.set_page_config(layout="wide")
@@ -33,59 +34,71 @@ labs={
 
 "name":"Ion Movement",
 
-"electrolyte":"NaCl",
+"question":
+"Where will Na⁺ move?",
 
-"ions":[
+"options":
+["Anode","Cathode"],
 
-("Na⁺","Cathode"),
-("Cl⁻","Anode")
+"answer":
+"Cathode",
 
-]
+"hint":
+"Positive ions move to cathode"
 
 },
 
 2:{
 
-"name":"Copper Sulphate",
+"name":"Electrode Products",
 
-"electrolyte":"CuSO₄",
+"question":
+"What forms at cathode in CuSO₄?",
 
-"ions":[
+"options":
+["Copper","Oxygen"],
 
-("Cu²⁺","Cathode"),
-("SO₄²⁻","Anode")
+"answer":
+"Copper",
 
-]
+"hint":
+"Metals deposit at cathode"
 
 },
 
 3:{
 
-"name":"Dilute Acid",
+"name":"Discharge Rules",
 
-"electrolyte":"H₂SO₄",
+"question":
+"Which ion discharges first?",
 
-"ions":[
+"options":
+["Cu²⁺","H⁺"],
 
-("H⁺","Cathode"),
-("SO₄²⁻","Anode")
+"answer":
+"Cu²⁺",
 
-]
+"hint":
+"Less reactive metals discharge"
 
 },
 
 4:{
 
-"name":"Brine",
+"name":"Observation",
 
-"electrolyte":"NaCl(aq)",
+"question":
+"Gas at anode in NaCl?",
 
-"ions":[
+"options":
+["Chlorine","Hydrogen"],
 
-("H⁺","Cathode"),
-("Cl⁻","Anode")
+"answer":
+"Chlorine",
 
-]
+"hint":
+"Halides form gas"
 
 },
 
@@ -93,14 +106,17 @@ labs={
 
 "name":"WAEC Challenge",
 
-"electrolyte":"Mixed",
+"question":
+"Product at cathode of dilute H₂SO₄?",
 
-"ions":[
+"options":
+["Hydrogen","Oxygen"],
 
-("Cu²⁺","Cathode"),
-("Cl⁻","Anode")
+"answer":
+"Hydrogen",
 
-]
+"hint":
+"Hydrogen forms in dilute acids"
 
 }
 
@@ -121,12 +137,12 @@ st.session_state.lives)
 st.sidebar.metric("Stars ⭐",
 st.session_state.stars)
 
-st.sidebar.metric("Streak 🔥",
-st.session_state.streak)
+st.sidebar.metric("Lab",
+st.session_state.lab)
 
-# LAB PROGRESS
+# PROGRESS MAP
 
-st.subheader("Lab Path")
+st.subheader("Lab Progress")
 
 cols=st.columns(5)
 
@@ -134,93 +150,47 @@ for i in range(1,6):
 
     if i<st.session_state.lab:
 
-        cols[i-1].success("Lab "+str(i))
+        cols[i-1].success(
+        "Lab "+str(i))
 
     elif i==st.session_state.lab:
 
-        cols[i-1].info("Current")
+        cols[i-1].info(
+        "Lab "+str(i))
 
     else:
 
-        cols[i-1].write("🔒")
+        cols[i-1].write(
+        "🔒 Lab "+str(i))
 
-# LAB CARD
+# GAME CARD
 
 st.subheader(
-"Lab "+str(st.session_state.lab)+
-": "+lab["name"])
+"Lab "+str(st.session_state.lab)+ ": "+lab["name"])
 
-st.info(
-"Electrolyte: "+
-lab["electrolyte"])
+st.info(lab["question"])
 
-# MATCHING GAME
+choice=st.radio(
 
-st.write("Match ions to electrodes")
+"Choose",
 
-col1,col2,col3=st.columns(3)
-
-with col1:
-
-    ion1=st.selectbox(
-
-    "Ion 1",
-
-    [lab["ions"][0][0],
-    lab["ions"][1][0]])
-
-    ion2=st.selectbox(
-
-    "Ion 2",
-
-    [lab["ions"][0][0],
-    lab["ions"][1][0]],
-
-    key="ion2")
-
-with col2:
-
-    cathode=st.selectbox(
-
-    "Cathode",
-
-    [ion1,ion2])
-
-with col3:
-
-    anode=st.selectbox(
-
-    "Anode",
-
-    [ion1,ion2])
-
-# SUBMIT
+lab["options"])
 
 col1,col2=st.columns(2)
 
 with col1:
 
-    if st.button("Run Experiment"):
+    if st.button("Submit"):
 
-        correct=0
+        st.session_state.answered=True
 
-        for ion in lab["ions"]:
+        if choice==lab["answer"]:
 
-            if ion[0]==cathode and ion[1]=="Cathode":
-
-                correct+=1
-
-            if ion[0]==anode and ion[1]=="Anode":
-
-                correct+=1
-
-        if correct==2:
-
-            st.success("Perfect experiment!")
+            st.success("Correct")
 
             st.balloons()
 
-            st.session_state.xp+=25
+            st.session_state.xp+=20
 
             st.session_state.stars+=1
 
@@ -228,7 +198,11 @@ with col1:
 
         else:
 
-            st.error("Experiment failed")
+            st.error("Wrong")
+
+            st.write(
+            "Hint:",
+            lab["hint"])
 
             st.session_state.lives-=1
 
@@ -242,47 +216,41 @@ with col2:
 
             st.session_state.lab+=1
 
+        st.session_state.answered=False
+
         st.rerun()
 
-# PROGRESS
+# PROGRESS BAR
 
-st.subheader("Mastery")
+st.subheader(
+"Mastery Progress")
 
 st.progress(
-
 min(
-st.session_state.xp/200,
+st.session_state.xp/150,
 1.0))
-
-# LEVEL FEEDBACK
-
-if st.session_state.streak>=3:
-
-    st.success("Streak Bonus!")
-
-    st.session_state.xp+=10
 
 # ACHIEVEMENTS
 
 st.subheader("Achievements")
 
-if st.session_state.stars>=2:
+if st.session_state.stars>=3:
 
-    st.write("⭐ Ion Handler")
-
-if st.session_state.stars>=4:
-
-    st.write("⚡ Lab Expert")
+    st.write("⭐ Ion Explorer")
 
 if st.session_state.stars>=5:
 
-    st.write("🏆 WAEC Ready")
+    st.write("⚡ Lab Technician")
+
+if st.session_state.stars>=8:
+
+    st.write("🏆 Electrolysis Master")
 
 # GAME OVER
 
 if st.session_state.lives==0:
 
-    st.error("Lab Closed")
+    st.error("Game Over")
 
     if st.button("Restart"):
 
@@ -298,12 +266,9 @@ if st.session_state.lives==0:
 
         st.rerun()
 
-# CONCEPT PANEL
+# LEARNING PANEL
 
-with st.expander("Lab Notes"):
+with st.expander(
+"Review concept"):
 
-    st.write(
-"Positive ions go to cathode")
-
-    st.write(
-"Negative ions go to anode")
+    st.write(lab["hint"])
