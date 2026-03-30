@@ -1,10 +1,9 @@
 import streamlit as st
 import random
-import time
 
 st.set_page_config(layout="wide")
 
-st.title("⚡ Electrolysis Quest – Virtual Lab")
+st.title("⚡ Electrolysis Quest")
 
 # PLAYER STATE
 
@@ -23,8 +22,8 @@ if "stars" not in st.session_state:
 if "streak" not in st.session_state:
     st.session_state.streak=0
 
-if "time_left" not in st.session_state:
-    st.session_state.time_left=20
+if "answered" not in st.session_state:
+    st.session_state.answered=False
 
 # LAB DATA
 
@@ -94,7 +93,7 @@ labs={
 
 "name":"WAEC Challenge",
 
-"electrolyte":"Mixed Cell",
+"electrolyte":"Mixed",
 
 "ions":[
 
@@ -109,7 +108,7 @@ labs={
 
 lab=labs[st.session_state.lab]
 
-# SIDEBAR PLAYER PANEL
+# PLAYER PANEL
 
 st.sidebar.title("Player")
 
@@ -125,9 +124,9 @@ st.session_state.stars)
 st.sidebar.metric("Streak 🔥",
 st.session_state.streak)
 
-# LAB MAP
+# LAB PROGRESS
 
-st.subheader("Lab Progress")
+st.subheader("Lab Path")
 
 cols=st.columns(5)
 
@@ -135,7 +134,7 @@ for i in range(1,6):
 
     if i<st.session_state.lab:
 
-        cols[i-1].success("✔")
+        cols[i-1].success("Lab "+str(i))
 
     elif i==st.session_state.lab:
 
@@ -145,7 +144,7 @@ for i in range(1,6):
 
         cols[i-1].write("🔒")
 
-# LAB INFO
+# LAB CARD
 
 st.subheader(
 "Lab "+str(st.session_state.lab)+
@@ -155,50 +154,47 @@ st.info(
 "Electrolyte: "+
 lab["electrolyte"])
 
-# TIMER
+# MATCHING GAME
 
-st.write("⏱ Time Challenge")
-
-st.progress(
-st.session_state.time_left/20)
-
-# VISUAL LAB LAYOUT
-
-st.write("### Virtual Electrolysis Cell")
+st.write("Match ions to electrodes")
 
 col1,col2,col3=st.columns(3)
 
 with col1:
 
-    st.error("ANODE (+)")
+    ion1=st.selectbox(
 
-    anode=st.selectbox(
-
-    "Ion at anode",
+    "Ion 1",
 
     [lab["ions"][0][0],
     lab["ions"][1][0]])
+
+    ion2=st.selectbox(
+
+    "Ion 2",
+
+    [lab["ions"][0][0],
+    lab["ions"][1][0]],
+
+    key="ion2")
 
 with col2:
 
-    st.info("Electrolyte")
+    cathode=st.selectbox(
 
-    st.write(
-    lab["ions"][0][0],
-    lab["ions"][1][0])
+    "Cathode",
+
+    [ion1,ion2])
 
 with col3:
 
-    st.success("CATHODE (-)")
+    anode=st.selectbox(
 
-    cathode=st.selectbox(
+    "Anode",
 
-    "Ion at cathode",
+    [ion1,ion2])
 
-    [lab["ions"][0][0],
-    lab["ions"][1][0]])
-
-# EXPERIMENT BUTTONS
+# SUBMIT
 
 col1,col2=st.columns(2)
 
@@ -210,21 +206,21 @@ with col1:
 
         for ion in lab["ions"]:
 
-            if ion[0]==anode and ion[1]=="Anode":
+            if ion[0]==cathode and ion[1]=="Cathode":
 
                 correct+=1
 
-            if ion[0]==cathode and ion[1]=="Cathode":
+            if ion[0]==anode and ion[1]=="Anode":
 
                 correct+=1
 
         if correct==2:
 
-            st.success("Experiment successful!")
+            st.success("Perfect experiment!")
 
             st.balloons()
 
-            st.session_state.xp+=30
+            st.session_state.xp+=25
 
             st.session_state.stars+=1
 
@@ -232,7 +228,7 @@ with col1:
 
         else:
 
-            st.error("Wrong placement")
+            st.error("Experiment failed")
 
             st.session_state.lives-=1
 
@@ -246,27 +242,25 @@ with col2:
 
             st.session_state.lab+=1
 
-            st.session_state.time_left=20
-
         st.rerun()
 
-# STREAK BONUS
+# PROGRESS
 
-if st.session_state.streak>=3:
-
-    st.success("🔥 Streak bonus +10 XP")
-
-    st.session_state.xp+=10
-
-# PROGRESS BAR
-
-st.subheader("Mastery Level")
+st.subheader("Mastery")
 
 st.progress(
 
 min(
-st.session_state.xp/250,
+st.session_state.xp/200,
 1.0))
+
+# LEVEL FEEDBACK
+
+if st.session_state.streak>=3:
+
+    st.success("Streak Bonus!")
+
+    st.session_state.xp+=10
 
 # ACHIEVEMENTS
 
@@ -282,13 +276,13 @@ if st.session_state.stars>=4:
 
 if st.session_state.stars>=5:
 
-    st.write("🏆 Electrolysis Master")
+    st.write("🏆 WAEC Ready")
 
 # GAME OVER
 
 if st.session_state.lives==0:
 
-    st.error("Game Over")
+    st.error("Lab Closed")
 
     if st.button("Restart"):
 
@@ -304,18 +298,12 @@ if st.session_state.lives==0:
 
         st.rerun()
 
-# LEARNING PANEL
+# CONCEPT PANEL
 
 with st.expander("Lab Notes"):
 
     st.write(
-"Oxidation occurs at the anode")
+"Positive ions go to cathode")
 
     st.write(
-"Reduction occurs at the cathode")
-
-    st.write(
-"Positive ions gain electrons")
-
-    st.write(
-"Negative ions lose electrons")
+"Negative ions go to anode")
