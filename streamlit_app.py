@@ -1,10 +1,10 @@
 import streamlit as st
 import random
-import pandas as pd
+import time
 
 st.set_page_config(layout="wide")
 
-st.title("⚡ Electrolysis Quest")
+st.title("⚡ Electrolysis Quest – Virtual Lab")
 
 # PLAYER STATE
 
@@ -20,65 +20,96 @@ if "lives" not in st.session_state:
 if "stars" not in st.session_state:
     st.session_state.stars=0
 
-if "exam_mode" not in st.session_state:
-    st.session_state.exam_mode=False
+if "streak" not in st.session_state:
+    st.session_state.streak=0
 
-if "exam_score" not in st.session_state:
-    st.session_state.exam_score=0
-
-if "exam_started" not in st.session_state:
-    st.session_state.exam_started=False
-
-if "weak_topic" not in st.session_state:
-    st.session_state.weak_topic="None"
+if "time_left" not in st.session_state:
+    st.session_state.time_left=20
 
 # LAB DATA
 
 labs={
 
-1:("Na⁺ goes to?","Cathode","Ion movement"),
+1:{
 
-2:("Product at cathode CuSO4?",
-"Copper","Products"),
+"name":"Ion Movement",
 
-3:("Which discharges first?",
-"Cu²⁺","Discharge"),
+"electrolyte":"NaCl",
 
-4:("Gas at anode NaCl?",
-"Chlorine","Observation"),
+"ions":[
 
-5:("Cathode product dilute acid?",
-"Hydrogen","WAEC")
-
-}
-
-# EXAM QUESTIONS
-
-exam_questions=[
-
-("Na⁺ goes to?",
-["Anode","Cathode"],
-"Cathode",
-"Ion movement"),
-
-("Product at cathode CuSO4?",
-["Copper","Oxygen"],
-"Copper",
-"Products"),
-
-("Gas at anode?",
-["Chlorine","Hydrogen"],
-"Chlorine",
-"Observation"),
-
-("Discharge first?",
-["Cu²⁺","H⁺"],
-"Cu²⁺",
-"Discharge")
+("Na⁺","Cathode"),
+("Cl⁻","Anode")
 
 ]
 
-# PLAYER PANEL
+},
+
+2:{
+
+"name":"Copper Sulphate",
+
+"electrolyte":"CuSO₄",
+
+"ions":[
+
+("Cu²⁺","Cathode"),
+("SO₄²⁻","Anode")
+
+]
+
+},
+
+3:{
+
+"name":"Dilute Acid",
+
+"electrolyte":"H₂SO₄",
+
+"ions":[
+
+("H⁺","Cathode"),
+("SO₄²⁻","Anode")
+
+]
+
+},
+
+4:{
+
+"name":"Brine",
+
+"electrolyte":"NaCl(aq)",
+
+"ions":[
+
+("H⁺","Cathode"),
+("Cl⁻","Anode")
+
+]
+
+},
+
+5:{
+
+"name":"WAEC Challenge",
+
+"electrolyte":"Mixed Cell",
+
+"ions":[
+
+("Cu²⁺","Cathode"),
+("Cl⁻","Anode")
+
+]
+
+}
+
+}
+
+lab=labs[st.session_state.lab]
+
+# SIDEBAR PLAYER PANEL
 
 st.sidebar.title("Player")
 
@@ -91,144 +122,167 @@ st.session_state.lives)
 st.sidebar.metric("Stars ⭐",
 st.session_state.stars)
 
-# MENU
+st.sidebar.metric("Streak 🔥",
+st.session_state.streak)
 
-mode=st.radio(
+# LAB MAP
 
-"Select Mode",
+st.subheader("Lab Progress")
 
-["Play Labs",
-"WAEC Exam",
-"Performance"])
+cols=st.columns(5)
 
-# LAB MODE
+for i in range(1,6):
 
-if mode=="Play Labs":
+    if i<st.session_state.lab:
 
-    question=labs[st.session_state.lab]
+        cols[i-1].success("✔")
 
-    st.subheader(
-    "Lab "+str(
-    st.session_state.lab))
+    elif i==st.session_state.lab:
 
-    st.info(question[0])
+        cols[i-1].info("Current")
 
-    ans=st.radio(
+    else:
 
-    "Answer",
+        cols[i-1].write("🔒")
 
-    ["Anode",
-    "Cathode",
-    "Copper",
-    "Hydrogen",
-    "Chlorine",
-    "Cu²⁺"])
+# LAB INFO
 
-    if st.button("Submit"):
+st.subheader(
+"Lab "+str(st.session_state.lab)+
+": "+lab["name"])
 
-        if ans==question[1]:
+st.info(
+"Electrolyte: "+
+lab["electrolyte"])
 
-            st.success("Correct")
+# TIMER
+
+st.write("⏱ Time Challenge")
+
+st.progress(
+st.session_state.time_left/20)
+
+# VISUAL LAB LAYOUT
+
+st.write("### Virtual Electrolysis Cell")
+
+col1,col2,col3=st.columns(3)
+
+with col1:
+
+    st.error("ANODE (+)")
+
+    anode=st.selectbox(
+
+    "Ion at anode",
+
+    [lab["ions"][0][0],
+    lab["ions"][1][0]])
+
+with col2:
+
+    st.info("Electrolyte")
+
+    st.write(
+    lab["ions"][0][0],
+    lab["ions"][1][0])
+
+with col3:
+
+    st.success("CATHODE (-)")
+
+    cathode=st.selectbox(
+
+    "Ion at cathode",
+
+    [lab["ions"][0][0],
+    lab["ions"][1][0]])
+
+# EXPERIMENT BUTTONS
+
+col1,col2=st.columns(2)
+
+with col1:
+
+    if st.button("Run Experiment"):
+
+        correct=0
+
+        for ion in lab["ions"]:
+
+            if ion[0]==anode and ion[1]=="Anode":
+
+                correct+=1
+
+            if ion[0]==cathode and ion[1]=="Cathode":
+
+                correct+=1
+
+        if correct==2:
+
+            st.success("Experiment successful!")
 
             st.balloons()
 
-            st.session_state.xp+=20
+            st.session_state.xp+=30
 
             st.session_state.stars+=1
 
+            st.session_state.streak+=1
+
         else:
 
-            st.error("Wrong")
+            st.error("Wrong placement")
 
             st.session_state.lives-=1
 
-            st.session_state.weak_topic= question[2]
+            st.session_state.streak=0
 
-    if st.button("Next"):
+with col2:
+
+    if st.button("Next Lab"):
 
         if st.session_state.lab<5:
 
             st.session_state.lab+=1
 
+            st.session_state.time_left=20
+
         st.rerun()
 
-# EXAM MODE
+# STREAK BONUS
 
-if mode=="WAEC Exam":
+if st.session_state.streak>=3:
 
-    st.subheader("WAEC Practice Test")
+    st.success("🔥 Streak bonus +10 XP")
 
-    score=0
+    st.session_state.xp+=10
 
-    answers=[]
+# PROGRESS BAR
 
-    for i,q in enumerate(exam_questions):
+st.subheader("Mastery Level")
 
-        choice=st.radio(
+st.progress(
 
-        q[0],
+min(
+st.session_state.xp/250,
+1.0))
 
-        q[1],
+# ACHIEVEMENTS
 
-        key=i)
+st.subheader("Achievements")
 
-        answers.append((choice,q))
+if st.session_state.stars>=2:
 
-    if st.button("Submit Exam"):
+    st.write("⭐ Ion Handler")
 
-        weak=[]
+if st.session_state.stars>=4:
 
-        for a in answers:
+    st.write("⚡ Lab Expert")
 
-            if a[0]==a[1][2]:
+if st.session_state.stars>=5:
 
-                score+=1
-
-            else:
-
-                weak.append(a[1][3])
-
-        st.session_state.exam_score=score
-
-        if len(weak)>0:
-
-            st.session_state.weak_topic= random.choice(weak)
-
-        st.success(
-        "Score: "+str(score)+ "/"+str(len(exam_questions)))
-
-# PERFORMANCE MODE
-
-if mode=="Performance":
-
-    st.subheader("Performance Report")
-
-    st.metric("Exam Score",
-    st.session_state.exam_score)
-
-    st.metric("XP",
-    st.session_state.xp)
-
-    st.metric("Stars",
-    st.session_state.stars)
-
-    st.metric("Weak Topic",
-    st.session_state.weak_topic)
-
-    if st.session_state.exam_score<2:
-
-        st.error(
-        "Revise basics")
-
-    elif st.session_state.exam_score<3:
-
-        st.warning(
-        "Practice more")
-
-    else:
-
-        st.success(
-        "WAEC Ready")
+    st.write("🏆 Electrolysis Master")
 
 # GAME OVER
 
@@ -246,4 +300,22 @@ if st.session_state.lives==0:
 
         st.session_state.stars=0
 
+        st.session_state.streak=0
+
         st.rerun()
+
+# LEARNING PANEL
+
+with st.expander("Lab Notes"):
+
+    st.write(
+"Oxidation occurs at the anode")
+
+    st.write(
+"Reduction occurs at the cathode")
+
+    st.write(
+"Positive ions gain electrons")
+
+    st.write(
+"Negative ions lose electrons")
