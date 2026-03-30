@@ -1,0 +1,36 @@
+level,topic,question,option1,option2,option3,option4,answer,hint
+1,Anode & Cathode,In the electrolysis of molten sodium chloride, which ion moves to the cathode?,Na+,Cl-,O2-,H+,Na+,Positive ions move to the cathode
+1,Anode & Cathode,In the same reaction, which ion moves to the anode?,Na+,Cl-,O2-,H+,Cl-,Negative ions move to the anode
+1,Ion Discharge,When copper sulfate solution is electrolyzed, which ion is discharged at the cathode?,Cu2+,SO42-,H+,O2-,Cu2+,Metal ions are deposited at the cathode
+1,Ion Discharge,In electrolysis of water, which gas forms at the anode?,H2,O2,Cl2,N2,O2,Oxygen is liberated at the positive electrode
+1,Observation,Drag the H+ ion to the correct electrode,Anode,Cathode,None,Either,Cathode,H+ are positive, move to cathode
+1,Observation,Drag the Cl- ion to the correct electrode,Anode,Cathode,None,Either,Anode,Cl- are negative, move to anode
+1,Electroplating,Which electrode is the object to be plated?,Cathode,Anode,Neutral,Either,Cathode,Object to be plated is the cathode
+1,Electroplating,Which metal is commonly used to coat cutlery?,Silver,Copper,Gold,Iron,Silver,Silver is non-reactive and shiny
+1,Electrolyte,Molten compounds conduct electricity because,Ions are free,Electrons flow,Molecules move,None,Ions are free,Free ions carry charge
+1,Electrolyte,Aqueous solutions conduct electricity due to,Free electrons,Free ions,Molecules,None,Free ions,Dissolved ions are charge carriers
+2,WAEC Quiz,Electrolysis of acidified water produces gases in ratio,2:1 H2:O2,1:1,1:2,3:1,2:1 H2:O2,Hydrogen to oxygen is 2:1
+2,WAEC Quiz,Electroplating prevents corrosion by,Oxidation,Coating metal,Reducing,Heat,Coating metal,Protective layer prevents reaction
+2,WAEC Quiz,Which electrode is connected to negative terminal?,Anode,Cathode,Both,Neutral,Cathode,Negative terminal = cathode
+2,WAEC Quiz,In electrolysis of brine, chlorine is released at,Cathode,Anode,Neutral,Solution,Anode,Negative ions go to anode
+2,WAEC Quiz,Which metal is used in electroplating jewelry?,Copper,Gold,Iron,Aluminium,Gold,Shiny, unreactive
+2,WAEC Quiz,Sodium is extracted by electrolysis of,Molten NaCl,Na2O,NaOH,Na2SO4,Molten NaCl,Molten salts allow ion mobility
+2,WAEC Quiz,During electrolysis, the substance that loses electrons is,Anode,Cathode,Electrolyte,None,Anode,Oxidation occurs at anode
+2,WAEC Quiz,During electrolysis, the substance that gains electrons is,Anode,Cathode,Electrolyte,None,Cathode,Reduction occurs at cathode
+2,WAEC Quiz,Electrolytes conduct electricity because they,Have electrons,Dissolve,Form ions,Are metals,Form ions,Ions carry current
+2,WAEC Quiz,During electrolysis, bubbles are observed at,Electrodes,Solution,Both,None,Electrodes,Gas forms at electrodes
+2,WAEC Quiz,Electrolysis is used in,Electroplating,Extraction,Purification,All,All,All are applications
+3,Challenge,Predict the product at cathode for CuSO4,Cu,SO4,O2,H2,Cu,Metal is deposited
+3,Challenge,Predict the product at anode for CuSO4,Cu,SO4,O2,H2,O2,Oxygen from water is discharged
+3,Challenge,In electrolysis, if voltage is increased, the rate of gas evolution will,Increase,Decrease,Remain,Stop,Increase,More current, faster reaction
+3,Challenge,A student electrolyzes molten KCl. The anode reaction produces,Cl2,K,H2,O2,Cl2,Negative ions oxidize at anode
+3,Challenge,Electroplating of iron with Zn prevents,Rust,Melting,Cracking,None,Rust,Zinc coating prevents corrosion
+3,Challenge,The positive electrode is called,Anode,Cathode,Electrolyte,Neutral,Anode,Anode = positive
+3,Challenge,The negative electrode is called,Cathode,Anode,Electrolyte,Neutral,Cathode,Cathode = negative
+3,Challenge,Calculate moles of H2 from 2F of electrons,1,0.5,2,4,1,2 electrons per H+
+3,Challenge,In electrolysis of molten NaCl, Na deposits at,Cathode,Anode,Solution,None,Cathode,Positive ions go to cathode
+3,Challenge,In electrolysis of molten NaCl, Cl2 gas evolves at,Anode,Cathode,Solution,None,Anode,Negative ions go to anode
+3,Challenge,Electroplating copper from solution requires,Cu2+,Cl-,Na+,OH-,Cu2+,Metal ions are deposited
+3,Challenge,If student connects battery in reverse, cathode becomes,Anode,Cathode,Neutral,None,Anode,Polarity reverses electrodes
+3,Challenge,In electrolysis, the term “discharge” refers to,Electrons,Ions,Molecules,Atoms,Ions,Ions gain or lose electrons
+3,Challenge,Electrolysis of molten Al2O3 uses,Cryolite,Water,NaCl,Cu,Cryolite,Lowers melting point
