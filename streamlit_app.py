@@ -103,17 +103,17 @@ if st.session_state.lives<=0:
 
 q = st.session_state.questions.iloc[st.session_state.q_index]
 
-st.subheader(q['question'])
+st.subheader(q['questions'])
 
 options=[
 
-q['optiona'],
+q['optionA'],
 
-q['optionb'],
+q['optionB'],
 
-q['optionc'],
+q['optionC'],
 
-q['optiond']
+q['optionD']
 
 ]
 
@@ -121,7 +121,7 @@ q['optiond']
 answer=st.radio(
 
 "Choose answer",
-
+p
 options,
 
 key="answer_select"
@@ -130,7 +130,7 @@ key="answer_select"
 
 
 # SUBMIT
-
+p
 if st.button("Submit Answer"):
 
     if not st.session_state.game_over:
@@ -186,8 +186,7 @@ st.divider()
 # LAB SECTION (VERSION 7 STYLE)
 
 st.header("Virtual Electrolysis Lab")
-
-st.write("Place ions correctly to earn XP")
+ll to earn XP")
 
 col1,col2=st.columns(2)
 
