@@ -1,18 +1,17 @@
 import streamlit as st
-import pandas as pd
 import random
 
 st.set_page_config(layout="wide")
 
 st.title("⚡ Electrolysis Quest")
 
-# PLAYER STATE
+# SESSION STATE
 
 if "xp" not in st.session_state:
     st.session_state.xp=0
 
-if "lab" not in st.session_state:
-    st.session_state.lab=1
+if "level" not in st.session_state:
+    st.session_state.level=1
 
 if "lives" not in st.session_state:
     st.session_state.lives=3
@@ -26,103 +25,51 @@ if "streak" not in st.session_state:
 if "answered" not in st.session_state:
     st.session_state.answered=False
 
-# LAB DATA
+# GAME QUESTIONS
 
-labs={
+labs=[
 
-1:{
+{
 
-"name":"Ion Movement",
+"electrolyte":"NaCl",
 
-"question":
-"Where will Na⁺ move?",
+"question":"Where will Na+ go?",
 
-"options":
-["Anode","Cathode"],
+"options":[
 
-"answer":
-"Cathode",
+"Anode",
+"Cathode"
 
-"hint":
-"Positive ions move to cathode"
+],
 
-},
+"answer":"Cathode",
 
-2:{
-
-"name":"Electrode Products",
-
-"question":
-"What forms at cathode in CuSO₄?",
-
-"options":
-["Copper","Oxygen"],
-
-"answer":
-"Copper",
-
-"hint":
-"Metals deposit at cathode"
+"hint":"Positive ions go to cathode"
 
 },
 
-3:{
+{
 
-"name":"Discharge Rules",
+"electrolyte":"CuSO4",
 
-"question":
-"Which ion discharges first?",
+"question":"Where will Cu2+ go?",
 
-"options":
-["Cu²⁺","H⁺"],
+"options":[
 
-"answer":
-"Cu²⁺",
+"Anode",
+"Cathode"
 
-"hint":
-"Less reactive metals discharge"
+],
 
-},
+"answer":"Cathode",
 
-4:{
-
-"name":"Observation",
-
-"question":
-"Gas at anode in NaCl?",
-
-"options":
-["Chlorine","Hydrogen"],
-
-"answer":
-"Chlorine",
-
-"hint":
-"Halides form gas"
-
-},
-
-5:{
-
-"name":"WAEC Challenge",
-
-"question":
-"Product at cathode of dilute H₂SO₄?",
-
-"options":
-["Hydrogen","Oxygen"],
-
-"answer":
-"Hydrogen",
-
-"hint":
-"Hydrogen forms in dilute acids"
+"hint":"Metals deposit at cathode"
 
 }
 
-}
+]
 
-lab=labs[st.session_state.lab]
+lab=random.choice(labs)
 
 # PLAYER PANEL
 
@@ -131,50 +78,36 @@ st.sidebar.title("Player")
 st.sidebar.metric("Energy ⚡",
 st.session_state.xp)
 
-st.sidebar.metric("Lives ❤️",
-st.session_state.lives)
-
 st.sidebar.metric("Stars ⭐",
 st.session_state.stars)
 
-st.sidebar.metric("Lab",
-st.session_state.lab)
+st.sidebar.metric("Lives ❤️",
+st.session_state.lives)
 
-# PROGRESS MAP
+st.sidebar.metric("Streak 🔥",
+st.session_state.streak)
 
-st.subheader("Lab Progress")
-
-cols=st.columns(5)
-
-for i in range(1,6):
-
-    if i<st.session_state.lab:
-
-        cols[i-1].success(
-        "Lab "+str(i))
-
-    elif i==st.session_state.lab:
-
-        cols[i-1].info(
-        "Lab "+str(i))
-
-    else:
-
-        cols[i-1].write(
-        "🔒 Lab "+str(i))
+st.sidebar.metric("Level",
+st.session_state.level)
 
 # GAME CARD
 
 st.subheader(
-"Lab "+str(st.session_state.lab)+ ": "+lab["name"])
+"Experiment "+str(
+st.session_state.level))
 
-st.info(lab["question"])
+st.info(
+"Electrolyte: "+ lab["electrolyte"])
+
+st.write(lab["question"])
 
 choice=st.radio(
 
-"Choose",
+"Select",
 
 lab["options"])
+
+# BUTTONS
 
 col1,col2=st.columns(2)
 
@@ -186,11 +119,11 @@ with col1:
 
         if choice==lab["answer"]:
 
-            st.success("Correct")
+            st.success("Correct!")
 
             st.balloons()
 
-            st.session_state.xp+=20
+            st.session_state.xp+=15
 
             st.session_state.stars+=1
 
@@ -210,11 +143,7 @@ with col1:
 
 with col2:
 
-    if st.button("Next Lab"):
-
-        if st.session_state.lab<5:
-
-            st.session_state.lab+=1
+    if st.button("Next"):
 
         st.session_state.answered=False
 
@@ -223,40 +152,35 @@ with col2:
 # PROGRESS BAR
 
 st.subheader(
-"Mastery Progress")
+"Progress to next lab")
 
 st.progress(
+
 min(
-st.session_state.xp/150,
+st.session_state.xp/200,
 1.0))
 
-# ACHIEVEMENTS
+# LEVEL UP
 
-st.subheader("Achievements")
+if st.session_state.xp>= (st.session_state.level*80):
 
-if st.session_state.stars>=3:
+    st.session_state.level+=1
 
-    st.write("⭐ Ion Explorer")
-
-if st.session_state.stars>=5:
-
-    st.write("⚡ Lab Technician")
-
-if st.session_state.stars>=8:
-
-    st.write("🏆 Electrolysis Master")
+    st.success(
+"New experiment unlocked!")
 
 # GAME OVER
 
 if st.session_state.lives==0:
 
-    st.error("Game Over")
+    st.error(
+"Game Over")
 
     if st.button("Restart"):
 
         st.session_state.xp=0
 
-        st.session_state.lab=1
+        st.session_state.level=1
 
         st.session_state.lives=3
 
@@ -266,9 +190,29 @@ if st.session_state.lives==0:
 
         st.rerun()
 
+# ACHIEVEMENTS
+
+st.subheader("Achievements")
+
+if st.session_state.stars>=5:
+
+    st.write("⭐ Ion Master")
+
+if st.session_state.stars>=10:
+
+    st.write("⚡ Electrolysis Pro")
+
+if st.session_state.stars>=20:
+
+    st.write("🏆 WAEC Ready")
+
 # LEARNING PANEL
 
 with st.expander(
-"Review concept"):
+"Learn concept"):
 
-    st.write(lab["hint"])
+    st.write(
+"Positive ions move to cathode")
+
+    st.write(
+"Negative ions move to anode")
