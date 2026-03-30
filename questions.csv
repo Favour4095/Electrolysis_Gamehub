@@ -1,0 +1,47 @@
+question,option1,option2,option3,option4,answer,topic,level,type
+"Drag the H⁺ ion to the cathode","H⁺","Cl⁻","Na⁺","OH⁻","H⁺","Lab 1: Ion Movement",1,lab
+"Drag Cl⁻ ion to the anode","H⁺","Cl⁻","Na⁺","OH⁻","Cl⁻","Lab 2: Ion Movement",1,lab
+"Complete the circuit in Lab 3 by selecting the right electrode","Anode","Cathode","Neutral","None","Cathode","Lab 3: Circuit Setup",1,lab
+"Identify the electrode where reduction occurs","Anode","Cathode","Neutral","Either","Cathode","Lab 4: Electrolysis Concept",1,lab
+"Select the ion that migrates to the anode","H⁺","Cl⁻","Na⁺","OH⁻","Cl⁻","Lab 5: Ion Migration",1,lab
+"Which ion is attracted to the cathode?","H⁺","OH⁻","Cl⁻","Na⁺","H⁺","Electrolysis Basics",2,yaq
+"Electrolysis of dilute NaCl produces?","H2 & Cl2","O2 & H2","Na & Cl","H2 & O2","H2 & Cl2","Electrolysis Products",2,yaq
+"Which electrode is positive in electrolysis?","Anode","Cathode","Neutral","None","Anode","Electrode Polarity",2,yaq
+"What gas is released at the anode during electrolysis of water?","O2","H2","Cl2","N2","O2","Electrolysis Products",2,yaq
+"Which of the following is a cation?","Cl⁻","SO4²⁻","Na⁺","NO3⁻","Na⁺","Ion Types",2,yaq
+"What happens to OH⁻ ions in electrolysis of water?","Move to cathode","Move to anode","Stay in solution","Neutralize","Move to anode","Ion Movement",2,yaq
+"Electrolysis of molten NaCl gives?","Na & Cl2","NaCl","Na & Cl","Na & Cl2","Na & Cl2","Electrolysis Products",2,yaq
+"Which electrolyte is used for electrolysis of water?","Dilute H2SO4","NaCl solution","Molten NaCl","HCl","Dilute H2SO4","Electrolyte Choice",2,yaq
+"During electrolysis, where does oxidation occur?","Anode","Cathode","Neutral","Either","Anode","Electrolysis Concept",2,yaq
+"Which electrode is the site of reduction?","Anode","Cathode","Neutral","None","Cathode","Electrode Concept",2,yaq
+"What is the product at cathode during electrolysis of CuSO4 with Cu electrodes?","Cu","Cu2+","SO4²⁻","O2","Cu","Electrolysis Products",2,yaq
+"What happens if current is reversed in electrolysis?","Electrode reactions swap","No reaction","Solution decomposes","Electrolyte changes","Electrode reactions swap","Advanced Electrolysis",3,yaq
+"Predict the products if molten PbBr2 is electrolyzed","Pb & Br2","Pb & Br","Pb2 & Br2","Pb & Br2","Pb & Br2","Electrolysis Advanced",3,yaq
+"Explain why H⁺ ions move to cathode","Cations are positive","Cations are negative","Anions move faster","Electrons attract them","Cations are positive","Ion Movement Reasoning",3,yaq
+"What is the effect of increasing current on electrolysis rate?","Increases rate","Decreases rate","No effect","Stops reaction","Increases rate","Electrolysis Concept",3,yaq
+"During electrolysis of brine, what forms at cathode?","H2","Cl2","Na","NaOH","H2","Electrolysis Products",3,yaq
+"Explain why oxygen is released at the anode during electrolysis of water","Anions are oxidized","Cations are reduced","Electrons move to cathode","Water decomposes","Anions are oxidized","Advanced Electrolysis",3,yaq
+"Identify the product of electrolysis of molten Al2O3 at cathode","Aluminium","Oxygen","Al2","Al³⁺","Aluminium","Electrolysis Products",2,yaq
+"Identify the product at anode during electrolysis of molten Al2O3","Aluminium","Oxygen","Al2","Al³⁺","Oxygen","Electrolysis Products",2,yaq
+"Predict the product at anode during electrolysis of CuCl2","Cl2","Cu","H2","Cu²⁺","Cl2","Electrolysis Products",3,yaq
+"Predict the product at cathode during electrolysis of CuCl2","Cu","Cl2","H2","Cu²⁺","Cu","Electrolysis Products",3,yaq
+"Which statement about electroplating is correct?","Metal deposited at cathode","Metal deposited at anode","Electrolyte is metal","All ions neutralized","Metal deposited at cathode","Applications",2,yaq
+"What happens if concentrated NaCl solution is electrolyzed?","Cl2 at anode, H2 at cathode","O2 at anode","Na at cathode","No reaction","Cl2 at anode, H2 at cathode","Electrolysis Products",3,yaq
+"Why is dilute H2SO4 used in electrolysis of water?","Increases conductivity","Decreases conductivity","Neutral","Acts as catalyst","Increases conductivity","Electrolyte Choice",2,yaq
+"Predict what happens if NaCl(aq) is electrolyzed with graphite electrodes","Cl2 at anode, H2 at cathode","Na at cathode","O2 at anode","No reaction","Cl2 at anode, H2 at cathode","Electrolysis Products",3,yaq
+"Explain why molten salts are used for extracting metals","Ions free to move","Solid metals react","Water decomposes","Electrodes neutral","Ions free to move","Advanced Electrolysis",3,yaq
+"Identify the ions in NaCl solution","Na⁺ & Cl⁻","H⁺ & OH⁻","Na²⁺ & Cl⁻","Na⁺ & OH⁻","Na⁺ & Cl⁻","Electrolysis Basics",2,yaq
+"Explain why anions move to anode","Attracted to positive electrode","Attracted to negative electrode","Neutral","Depends on size","Attracted to positive electrode","Ion Movement Reasoning",3,yaq
+"Which gas is liberated at anode during electrolysis of molten NaCl?","Cl2","O2","H2","Na","Cl2","Electrolysis Products",2,yaq
+"Which gas is liberated at cathode during electrolysis of water?","H2","O2","Cl2","Na","H2","Electrolysis Products",2,yaq
+"Which is oxidized during electrolysis of CuCl2?","Cl⁻","Cu²⁺","H⁺","OH⁻","Cl⁻","Electrolysis Advanced",3,yaq
+"Which is reduced during electrolysis of CuCl2?","Cu²⁺","Cl⁻","H⁺","OH⁻","Cu²⁺","Electrolysis Advanced",3,yaq
+"Predict the products if MgBr2 is electrolyzed","Mg & Br2","Mg & Br","Mg2 & Br2","Mg & Br2","Mg & Br2","Electrolysis Advanced",3,yaq
+"Explain why hydrogen is liberated at cathode during electrolysis of water","Cations gain electrons","Anions gain electrons","Neutral ions","Depends on electrode","Cations gain electrons","Ion Movement Reasoning",3,yaq
+"Explain why oxygen is liberated at anode during electrolysis of water","Anions lose electrons","Cations lose electrons","Depends on electrolyte","Neutral ions","Anions lose electrons","Advanced Electrolysis",3,yaq
+"Which of the following is an example of electroplating?","Silver plating spoon","Boiling water","Electrolysis of water","Rusting iron","Silver plating spoon","Applications",2,yaq
+"Explain why ionic compounds must be molten or in solution for electrolysis","Ions free to move","Solid conducts","Metal decomposes","Electrode neutral","Ions free to move","Electrolyte Choice",3,yaq
+"Predict products if CuSO4(aq) is electrolyzed using inert electrodes","Cu at cathode, O2 at anode","H2 at anode","Cu²⁺ at cathode","No reaction","Cu at cathode, O2 at anode","Electrolysis Advanced",3,yaq
+"Why is graphite used as electrode in some electrolysis experiments?","Conducts electricity","Neutral","Reacts","Non-conductive","Conducts electricity","Electrode Choice",2,yaq
+"Explain why Cu²⁺ ions are attracted to cathode","Cations attracted to negative electrode","Cations attracted to positive electrode","Anions move to cathode","Depends on concentration","Cations attracted to negative electrode","Ion Movement Reasoning",3,yaq
+
