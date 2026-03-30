@@ -3,12 +3,12 @@ import random
 
 st.set_page_config(layout="wide")
 
-st.title("⚡ Electrolysis Quest")
+st.title("⚡ Electrolysis Lab Game")
 
-# SESSION STATE
+# SESSION
 
-if "xp" not in st.session_state:
-    st.session_state.xp=0
+if "energy" not in st.session_state:
+    st.session_state.energy=0
 
 if "level" not in st.session_state:
     st.session_state.level=1
@@ -22,29 +22,22 @@ if "stars" not in st.session_state:
 if "streak" not in st.session_state:
     st.session_state.streak=0
 
-if "answered" not in st.session_state:
-    st.session_state.answered=False
 
-# GAME QUESTIONS
+# GAME DATA
 
-labs=[
+game_data=[
 
 {
 
 "electrolyte":"NaCl",
 
-"question":"Where will Na+ go?",
+"ions":[
 
-"options":[
+("Na+","Cathode"),
 
-"Anode",
-"Cathode"
+("Cl-","Anode")
 
-],
-
-"answer":"Cathode",
-
-"hint":"Positive ions go to cathode"
+]
 
 },
 
@@ -52,31 +45,103 @@ labs=[
 
 "electrolyte":"CuSO4",
 
-"question":"Where will Cu2+ go?",
+"ions":[
 
-"options":[
+("Cu2+","Cathode"),
 
-"Anode",
-"Cathode"
+("SO4-","Anode")
 
-],
-
-"answer":"Cathode",
-
-"hint":"Metals deposit at cathode"
+]
 
 }
 
 ]
 
-lab=random.choice(labs)
+current=random.choice(game_data)
+
+st.subheader("Level "+str(
+st.session_state.level))
+
+st.info("Electrolyte: "+
+current["electrolyte"])
+
+
+# UI
+
+col1,col2,col3=st.columns(3)
+
+with col1:
+
+    st.subheader("Ions")
+
+    ion1=st.selectbox(
+    "Ion 1",
+
+    [current["ions"][0][0],
+    current["ions"][1][0]])
+
+    ion2=st.selectbox(
+    "Ion 2",
+
+    [current["ions"][0][0],
+    current["ions"][1][0]])
+
+with col2:
+
+    st.subheader("Cathode")
+
+    cathode1=st.selectbox(
+    "Drop ion",
+
+    [ion1,ion2])
+
+with col3:
+
+    st.subheader("Anode")
+
+    anode1=st.selectbox(
+    "Drop ion",
+
+    [ion1,ion2])
+
+# SUBMIT
+
+if st.button("Run Experiment"):
+
+    correct=0
+
+    if cathode1=="Na+" or cathode1=="Cu2+":
+        correct+=1
+
+    if anode1=="Cl-" or anode1=="SO4-":
+        correct+=1
+
+    if correct==2:
+
+        st.success("Perfect experiment!")
+
+        st.balloons()
+
+        st.session_state.energy+=20
+
+        st.session_state.stars+=1
+
+        st.session_state.streak+=1
+
+    else:
+
+        st.error("Experiment failed")
+
+        st.session_state.lives-=1
+
+        st.session_state.streak=0
 
 # PLAYER PANEL
 
 st.sidebar.title("Player")
 
 st.sidebar.metric("Energy ⚡",
-st.session_state.xp)
+st.session_state.energy)
 
 st.sidebar.metric("Stars ⭐",
 st.session_state.stars)
@@ -87,98 +152,29 @@ st.session_state.lives)
 st.sidebar.metric("Streak 🔥",
 st.session_state.streak)
 
-st.sidebar.metric("Level",
-st.session_state.level)
-
-# GAME CARD
-
-st.subheader(
-"Experiment "+str(
-st.session_state.level))
-
-st.info(
-"Electrolyte: "+ lab["electrolyte"])
-
-st.write(lab["question"])
-
-choice=st.radio(
-
-"Select",
-
-lab["options"])
-
-# BUTTONS
-
-col1,col2=st.columns(2)
-
-with col1:
-
-    if st.button("Submit"):
-
-        st.session_state.answered=True
-
-        if choice==lab["answer"]:
-
-            st.success("Correct!")
-
-            st.balloons()
-
-            st.session_state.xp+=15
-
-            st.session_state.stars+=1
-
-            st.session_state.streak+=1
-
-        else:
-
-            st.error("Wrong")
-
-            st.write(
-            "Hint:",
-            lab["hint"])
-
-            st.session_state.lives-=1
-
-            st.session_state.streak=0
-
-with col2:
-
-    if st.button("Next"):
-
-        st.session_state.answered=False
-
-        st.rerun()
-
-# PROGRESS BAR
-
-st.subheader(
-"Progress to next lab")
+# PROGRESS
 
 st.progress(
-
-min(
-st.session_state.xp/200,
-1.0))
+min(st.session_state.energy/200,1.0))
 
 # LEVEL UP
 
-if st.session_state.xp>= (st.session_state.level*80):
+if st.session_state.energy>=
+(st.session_state.level*100):
 
     st.session_state.level+=1
 
-    st.success(
-"New experiment unlocked!")
+    st.success("New lab unlocked!")
 
 # GAME OVER
 
 if st.session_state.lives==0:
 
-    st.error(
-"Game Over")
+    st.error("Lab closed")
 
     if st.button("Restart"):
 
-        st.session_state.xp=0
+        st.session_state.energy=0
 
         st.session_state.level=1
 
@@ -186,33 +182,4 @@ if st.session_state.lives==0:
 
         st.session_state.stars=0
 
-        st.session_state.streak=0
-
         st.rerun()
-
-# ACHIEVEMENTS
-
-st.subheader("Achievements")
-
-if st.session_state.stars>=5:
-
-    st.write("⭐ Ion Master")
-
-if st.session_state.stars>=10:
-
-    st.write("⚡ Electrolysis Pro")
-
-if st.session_state.stars>=20:
-
-    st.write("🏆 WAEC Ready")
-
-# LEARNING PANEL
-
-with st.expander(
-"Learn concept"):
-
-    st.write(
-"Positive ions move to cathode")
-
-    st.write(
-"Negative ions move to anode")
