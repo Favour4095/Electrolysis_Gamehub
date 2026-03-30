@@ -247,7 +247,6 @@ if st.button("Restart"):
 
     st.session_state.correct=0
 
-    st.session_state.question=
-    get_question(1)
+    st.session_state.question= get_question(1)
 
     st.rerun()
