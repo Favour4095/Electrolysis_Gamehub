@@ -1,49 +1,54 @@
 import streamlit as st
 import pandas as pd
-import random
 import sqlite3
+import random
 
-st.set_page_config(page_title="Electrolysis Adventure", layout="wide")
+st.set_page_config(page_title="Electrolysis Adventure",layout="wide")
 
-# LOAD QUESTIONS
-df = pd.read_csv("electrolysis_questions.csv")
+# LOAD CSV
+df = pd.read_csv("Questions.csv")
 
-# CLEAN COLUMNS (prevents optionA errors)
-df.columns = df.columns.str.strip().str.lower()
+# CLEAN COLUMN NAMES
+df.columns=df.columns.str.strip()
 
 # DATABASE
-conn = sqlite3.connect("students.db",check_same_thread=False)
-cursor = conn.cursor()
+conn=sqlite3.connect("students.db",check_same_thread=False)
+
+cursor=conn.cursor()
 
 cursor.execute("""
+
 CREATE TABLE IF NOT EXISTS students(
+
 name TEXT,
 xp INTEGER,
 score INTEGER
+
 )
+
 """)
 
-# SESSION STATES
+# SESSION STATE
 
 if "questions" not in st.session_state:
 
-    st.session_state.questions = df.sample(frac=1).reset_index(drop=True)
+    st.session_state.questions=df.sample(frac=1).reset_index(drop=True)
 
 if "q_index" not in st.session_state:
 
-    st.session_state.q_index = 0
-
-if "score" not in st.session_state:
-
-    st.session_state.score = 0
+    st.session_state.q_index=0
 
 if "xp" not in st.session_state:
 
-    st.session_state.xp = 0
+    st.session_state.xp=0
+
+if "score" not in st.session_state:
+
+    st.session_state.score=0
 
 if "lives" not in st.session_state:
 
-    st.session_state.lives = 3
+    st.session_state.lives=3
 
 if "game_over" not in st.session_state:
 
@@ -54,13 +59,13 @@ if "game_over" not in st.session_state:
 
 def reset_game():
 
-    st.session_state.questions = df.sample(frac=1).reset_index(drop=True)
+    st.session_state.questions=df.sample(frac=1).reset_index(drop=True)
 
     st.session_state.q_index=0
 
-    st.session_state.score=0
-
     st.session_state.xp=0
+
+    st.session_state.score=0
 
     st.session_state.lives=3
 
@@ -82,7 +87,7 @@ c2.metric("Lives",st.session_state.lives)
 c3.metric("Score",st.session_state.score)
 
 
-# GAME OVER CHECK
+# GAME OVER
 
 if st.session_state.lives<=0:
 
@@ -90,7 +95,7 @@ if st.session_state.lives<=0:
 
     st.session_state.game_over=True
 
-    if st.button("Restart Game"):
+    if st.button("Restart"):
 
         reset_game()
 
@@ -99,9 +104,9 @@ if st.session_state.lives<=0:
     st.stop()
 
 
-# CURRENT QUESTION
+# GET QUESTION
 
-q = st.session_state.questions.iloc[st.session_state.q_index]
+q=st.session_state.questions.iloc[st.session_state.q_index]
 
 st.subheader(q['questions'])
 
@@ -129,50 +134,47 @@ key="answer_select"
 )
 
 
-
 # SUBMIT
-p
+
 if st.button("Submit Answer"):
 
-    if not st.session_state.game_over:
+    letters=['A','B','C','D']
 
-        letters=['A','B','C','D']
+    selected_letter=letters[options.index(answer)]
 
-        selected_letter=letters[options.index(answer)]
+    if selected_letter==q['answer']:
 
-        if selected_letter==q['answer']:
+        st.success("Correct")
 
-            st.success("Correct!")
+        st.balloons()
 
-            st.balloons()
+        st.session_state.score+=10
 
-            st.session_state.score+=10
+        st.session_state.xp+=20
 
-            st.session_state.xp+=20
+    else:
 
-        else:
+        st.error("Wrong answer")
 
-            st.error("Wrong answer")
+        st.session_state.lives-=1
 
-            st.session_state.lives-=1
+        st.info("Hint: "+str(q['hint']))
 
 
 # NEXT QUESTION
 
 if st.button("Next Question"):
 
-    if not st.session_state.game_over:
+    st.session_state.q_index+=1
 
-        st.session_state.q_index+=1
+    if st.session_state.q_index>=len(st.session_state.questions):
 
-        if st.session_state.q_index>=len(st.session_state.questions):
+        st.session_state.q_index=0
 
-            st.session_state.q_index=0
-
-        st.rerun()
+    st.rerun()
 
 
-# RESET BUTTON
+# RESET
 
 if st.button("Reset Game"):
 
@@ -183,45 +185,29 @@ if st.button("Reset Game"):
 
 st.divider()
 
-
 # LAB SECTION (VERSION 7 STYLE)
 
 st.header("Virtual Electrolysis Lab")
-st.write("Place ions correctly to earn XP")
 
-col1,col2=st.columns(2)
+st.write("Select ions that move to Cathode")
 
-with col1:
-
-    st.subheader("Anode (+)")
-
-    st.info("Negative ions go here")
-
-with col2:
-
-    st.subheader("Cathode (-)")
-
-    st.info("Positive ions go here")
-
-
-ions=['H+','Cu2+','Na+','OH-','Cl-','SO4-']
+ions=['H+','Na+','Cu2+','Cl-','OH-','SO4-']
 
 selected=st.multiselect(
 
-"Select ions that go to Cathode",
+"Select ions",
 
 ions
 
 )
 
+if st.button("Submit Lab"):
 
-if st.button("Submit Lab Work"):
-
-    correct=['H+','Cu2+','Na+']
+    correct=['H+','Na+','Cu2+']
 
     if any(i in selected for i in correct):
 
-        st.success("Good laboratory work")
+        st.success("Good work")
 
         st.balloons()
 
@@ -229,19 +215,18 @@ if st.button("Submit Lab Work"):
 
     else:
 
-        st.error("Review ion charges")
+        st.error("Check charges again")
 
 
 st.divider()
-
 
 # SAVE PLAYER
 
 st.subheader("Save Progress")
 
-name=st.text_input("Player Name")
+name=st.text_input("Player name")
 
-if st.button("Save Progress"):
+if st.button("Save"):
 
     if name!="":
 
@@ -256,8 +241,3 @@ if st.button("Save Progress"):
         conn.commit()
 
         st.success("Progress saved")
-
-
-# FOOTER
-
-st.caption("Educational Electrolysis Game - SS2 Chemistry")
