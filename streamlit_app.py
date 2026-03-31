@@ -121,12 +121,13 @@ q['optionD']
 answer=st.radio(
 
 "Choose answer",
-p
+
 options,
 
 key="answer_select"
 
 )
+
 
 
 # SUBMIT
