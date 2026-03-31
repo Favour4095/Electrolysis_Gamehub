@@ -1,243 +1,319 @@
 import streamlit as st
-import pandas as pd
-import sqlite3
 import random
+import time
 
-st.set_page_config(page_title="Electrolysis Adventure",layout="wide")
+st.set_page_config(layout="wide")
 
-# LOAD CSV
-df = pd.read_csv("electrolysis_questions.csv")
+st.title("⚡ Electrolysis Quest – Virtual Lab")
 
-# CLEAN COLUMN NAMES
-df.columns=df.columns.str.strip()
-
-# DATABASE
-conn=sqlite3.connect("students.db",check_same_thread=False)
-
-cursor=conn.cursor()
-
-cursor.execute("""
-
-CREATE TABLE IF NOT EXISTS students(
-
-name TEXT,
-xp INTEGER,
-score INTEGER
-
-)
-
-""")
-
-# SESSION STATE
-
-if "questions" not in st.session_state:
-
-    st.session_state.questions=df.sample(frac=1).reset_index(drop=True)
-
-if "q_index" not in st.session_state:
-
-    st.session_state.q_index=0
+# PLAYER STATE
 
 if "xp" not in st.session_state:
-
     st.session_state.xp=0
 
-if "score" not in st.session_state:
-
-    st.session_state.score=0
+if "lab" not in st.session_state:
+    st.session_state.lab=1
 
 if "lives" not in st.session_state:
-
     st.session_state.lives=3
 
-if "game_over" not in st.session_state:
+if "stars" not in st.session_state:
+    st.session_state.stars=0
 
-    st.session_state.game_over=False
+if "streak" not in st.session_state:
+    st.session_state.streak=0
 
+if "time_left" not in st.session_state:
+    st.session_state.time_left=20
 
-# RESET FUNCTION
+# LAB DATA
 
-def reset_game():
+labs={
 
-    st.session_state.questions=df.sample(frac=1).reset_index(drop=True)
+1:{
 
-    st.session_state.q_index=0
+"name":"Ion Movement",
 
-    st.session_state.xp=0
+"electrolyte":"NaCl",
 
-    st.session_state.score=0
+"ions":[
 
-    st.session_state.lives=3
-
-    st.session_state.game_over=False
-
-
-# HEADER
-
-st.title("Electrolysis Adventure Game")
-
-st.progress(st.session_state.xp/500)
-
-c1,c2,c3=st.columns(3)
-
-c1.metric("XP",st.session_state.xp)
-
-c2.metric("Lives",st.session_state.lives)
-
-c3.metric("Score",st.session_state.score)
-
-
-# GAME OVER
-
-if st.session_state.lives<=0:
-
-    st.error("Game Over")
-
-    st.session_state.game_over=True
-
-    if st.button("Restart"):
-
-        reset_game()
-
-        st.rerun()
-
-    st.stop()
-
-
-# GET QUESTION
-
-q=st.session_state.questions.iloc[st.session_state.q_index]
-
-st.subheader(q['questions'])
-
-options=[
-
-q['optionA'],
-
-q['optionB'],
-
-q['optionC'],
-
-q['optionD']
+("Na⁺","Cathode"),
+("Cl⁻","Anode")
 
 ]
 
+},
 
-answer=st.radio(
+2:{
 
-"Choose answer",
+"name":"Copper Sulphate",
 
-options,
+"electrolyte":"CuSO₄",
 
-key="answer_select"
+"ions":[
 
-)
+("Cu²⁺","Cathode"),
+("SO₄²⁻","Anode")
 
+]
 
-# SUBMIT
+},
 
-if st.button("Submit Answer"):
+3:{
 
-    letters=['A','B','C','D']
+"name":"Dilute Acid",
 
-    selected_letter=letters[options.index(answer)]
+"electrolyte":"H₂SO₄",
 
-    if selected_letter==q['answer']:
+"ions":[
 
-        st.success("Correct")
+("H⁺","Cathode"),
+("SO₄²⁻","Anode")
 
-        st.balloons()
+]
 
-        st.session_state.score+=10
+},
 
-        st.session_state.xp+=20
+4:{
+
+"name":"Brine",
+
+"electrolyte":"NaCl(aq)",
+
+"ions":[
+
+("H⁺","Cathode"),
+("Cl⁻","Anode")
+
+]
+
+},
+
+5:{
+
+"name":"WAEC Challenge",
+
+"electrolyte":"Mixed Cell",
+
+"ions":[
+
+("Cu²⁺","Cathode"),
+("Cl⁻","Anode")
+
+]
+
+}
+
+}
+
+lab=labs[st.session_state.lab]
+
+# SIDEBAR PLAYER PANEL
+
+st.sidebar.title("Player")
+
+st.sidebar.metric("Energy ⚡",
+st.session_state.xp)
+
+st.sidebar.metric("Lives ❤️",
+st.session_state.lives)
+
+st.sidebar.metric("Stars ⭐",
+st.session_state.stars)
+
+st.sidebar.metric("Streak 🔥",
+st.session_state.streak)
+
+# LAB MAP
+
+st.subheader("Lab Progress")
+
+cols=st.columns(5)
+
+for i in range(1,6):
+
+    if i<st.session_state.lab:
+
+        cols[i-1].success("✔")
+
+    elif i==st.session_state.lab:
+
+        cols[i-1].info("Current")
 
     else:
 
-        st.error("Wrong answer")
+        cols[i-1].write("🔒")
 
-        st.session_state.lives-=1
+# LAB INFO
 
-        st.info("Hint: "+str(q['hint']))
+st.subheader(
+"Lab "+str(st.session_state.lab)+": "+lab["name"])
 
+st.info(
+"Electrolyte: "+ lab["electrolyte"])
 
-# NEXT QUESTION
+# TIMER
 
-if st.button("Next Question"):
+st.write("⏱ Time Challenge")
 
-    st.session_state.q_index+=1
+st.progress(
+st.session_state.time_left/20)
 
-    if st.session_state.q_index>=len(st.session_state.questions):
+# VISUAL LAB LAYOUT
 
-        st.session_state.q_index=0
+st.write("### Virtual Electrolysis Cell")
 
-    st.rerun()
+col1,col2,col3=st.columns(3)
 
+with col1:
 
-# RESET
+    st.error("ANODE (+)")
 
-if st.button("Reset Game"):
+    anode=st.selectbox(
 
-    reset_game()
+    "Ion at anode",
 
-    st.rerun()
+    [lab["ions"][0][0],
+    lab["ions"][1][0]])
 
+with col2:
 
-st.divider()
+    st.info("Electrolyte")
 
-# LAB SECTION (VERSION 7 STYLE)
+    st.write(
+    lab["ions"][0][0],
+    lab["ions"][1][0])
 
-st.header("Virtual Electrolysis Lab")
+with col3:
 
-st.write("Select ions that move to Cathode")
+    st.success("CATHODE (-)")
 
-ions=['H+','Na+','Cu2+','Cl-','OH-','SO4-']
+    cathode=st.selectbox(
 
-selected=st.multiselect(
+    "Ion at cathode",
 
-"Select ions",
+    [lab["ions"][0][0],
+    lab["ions"][1][0]])
 
-ions
+# EXPERIMENT BUTTONS
 
-)
+col1,col2=st.columns(2)
 
-if st.button("Submit Lab"):
+with col1:
 
-    correct=['H+','Na+','Cu2+']
+    if st.button("Run Experiment"):
 
-    if any(i in selected for i in correct):
+        correct=0
 
-        st.success("Good work")
+        for ion in lab["ions"]:
 
-        st.balloons()
+            if ion[0]==anode and ion[1]=="Anode":
 
-        st.session_state.xp+=30
+                correct+=1
 
-    else:
+            if ion[0]==cathode and ion[1]=="Cathode":
 
-        st.error("Check charges again")
+                correct+=1
 
+        if correct==2:
 
-st.divider()
+            st.success("Experiment successful!")
 
-# SAVE PLAYER
+            st.balloons()
 
-st.subheader("Save Progress")
+            st.session_state.xp+=30
 
-name=st.text_input("Player name")
+            st.session_state.stars+=1
 
-if st.button("Save"):
+            st.session_state.streak+=1
 
-    if name!="":
+        else:
 
-        cursor.execute(
+            st.error("Wrong placement")
 
-        "INSERT INTO students VALUES(?,?,?)",
+            st.session_state.lives-=1
 
-        (name,st.session_state.xp,st.session_state.score)
+            st.session_state.streak=0
 
-        )
+with col2:
 
-        conn.commit()
+    if st.button("Next Lab"):
 
-        st.success("Progress saved")
+        if st.session_state.lab<5:
+
+            st.session_state.lab+=1
+
+            st.session_state.time_left=20
+
+        st.rerun()
+
+# STREAK BONUS
+
+if st.session_state.streak>=3:
+
+    st.success("🔥 Streak bonus +10 XP")
+
+    st.session_state.xp+=10
+
+# PROGRESS BAR
+
+st.subheader("Mastery Level")
+
+st.progress(
+
+min(
+st.session_state.xp/250,
+1.0))
+
+# ACHIEVEMENTS
+
+st.subheader("Achievements")
+
+if st.session_state.stars>=2:
+
+    st.write("⭐ Ion Handler")
+
+if st.session_state.stars>=4:
+
+    st.write("⚡ Lab Expert")
+
+if st.session_state.stars>=5:
+
+    st.write("🏆 Electrolysis Master")
+
+# GAME OVER
+
+if st.session_state.lives==0:
+
+    st.error("Game Over")
+
+    if st.button("Restart"):
+
+        st.session_state.xp=0
+
+        st.session_state.lab=1
+
+        st.session_state.lives=3
+
+        st.session_state.stars=0
+
+        st.session_state.streak=0
+
+        st.rerun()
+
+# LEARNING PANEL
+
+with st.expander("Lab Notes"):
+
+    st.write(
+"Oxidation occurs at the anode")
+
+    st.write(
+"Reduction occurs at the cathode")
+
+    st.write(
+"Positive ions gain electrons")
+
+    st.write(
+"Negative ions lose electrons")
