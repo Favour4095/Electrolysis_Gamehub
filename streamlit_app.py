@@ -186,7 +186,7 @@ st.divider()
 # LAB SECTION (VERSION 7 STYLE)
 
 st.header("Virtual Electrolysis Lab")
-ll to earn XP")
+st.write("Place ions correctly to earn XP")
 
 col1,col2=st.columns(2)
 
