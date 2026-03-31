@@ -5,9 +5,9 @@ import random
 st.set_page_config(layout="wide")
 st.title("⚡ Electrolysis Quest – Virtual Lab (Timed + Badges)")
 
-# ---------------------------------
+# ------------------------------------------------------------
 # PLAYER STATE
-# ---------------------------------
+# ------------------------------------------------------------
 
 if "xp" not in st.session_state:
     st.session_state.xp = 0
@@ -36,9 +36,9 @@ if "hint_used" not in st.session_state:
 if "level_start_time" not in st.session_state:
     st.session_state.level_start_time = time.time()
 
-# ---------------------------------
+# ------------------------------------------------------------
 # LAB QUESTION BANK
-# ---------------------------------
+# ------------------------------------------------------------
 
 labs = {
 
@@ -200,27 +200,25 @@ labs = {
 lab = labs[st.session_state.lab]
 question = lab["questions"][st.session_state.lab_question]
 
-# ---------------------------------
-# CHECK TIME FOR CURRENT LEVEL
-# ---------------------------------
-
-if "level_start_time" not in st.session_state:
-    st.session_state.level_start_time = time.time()
+# ------------------------------------------------------------
+# TIME MANAGEMENT
+# ------------------------------------------------------------
 
 elapsed = int(time.time() - st.session_state.level_start_time)
 time_remaining = max(300 - elapsed, 0)
 
-st.sidebar.write(f"⏱ Time left: {time_remaining} s")
+# Always show time
+st.sidebar.write(f"⏱ Time Left: {time_remaining} sec")
 
-# ---------------------------------
+# ------------------------------------------------------------
 # BADGES
-# ---------------------------------
+# ------------------------------------------------------------
 
 def get_badges():
     badges = []
     if st.session_state.stars >= 1:
         badges.append("🧠 Lab Novice")
-    if st.session_state.stars >= 3:
+    if st.session_state.streak >= 3:
         badges.append("🔥 Streak Master")
     if st.session_state.stars >= 5:
         badges.append("🏅 Electrolysis Specialist")
@@ -229,19 +227,18 @@ def get_badges():
     if elapsed <= 300:
         badges.append("⚡ Speedster")
     if not st.session_state.hint_used:
-        badges.append("💡 No-Hint Hero")
+        badges.append("💡 No‑Hint Hero")
     return badges
 
 badges = get_badges()
 
 st.sidebar.write("Badges:", badges if badges else "No badges yet — play more!")
 
-# ---------------------------------
+# ------------------------------------------------------------
 # DISPLAY QUESTION
-# ---------------------------------
+# ------------------------------------------------------------
 
-st.subheader(f"Lab {st.session_state.lab} → {lab['name']}")
-
+st.subheader(f"Lab {st.session_state.lab} — {lab['name']}")
 st.write(f"Question {st.session_state.lab_question + 1} of 5")
 
 # -------------------------------
@@ -249,9 +246,7 @@ st.write(f"Question {st.session_state.lab_question + 1} of 5")
 # -------------------------------
 
 if question["type"] == "placement":
-
     st.write(question["question"])
-
     ions = [ion[0] for ion in question["ions"]]
 
     col1, col2 = st.columns(2)
@@ -260,14 +255,11 @@ if question["type"] == "placement":
         anode = st.selectbox("ANODE (+)", ions)
 
     with col2:
-        cathode = st.selectbox("CATHODE (-)", ions)
+        cathode = st.selectbox("CATHODE (−)", ions)
 
     if st.button("Run Experiment"):
-
         if not st.session_state.answered:
-
             correct_count = 0
-
             for ion in question["ions"]:
                 if ion[0] == anode and ion[1] == "Anode":
                     correct_count += 1
@@ -290,13 +282,9 @@ if question["type"] == "placement":
 # -------------------------------
 
 if question["type"] == "mcq":
-
     answer = st.radio(question["question"], question["options"])
-
     if st.button("Submit Answer"):
-
         if not st.session_state.answered:
-
             if answer == question["answer"]:
                 st.success("Correct! 🎉")
                 st.balloons()
@@ -314,50 +302,45 @@ if question["type"] == "mcq":
 # -------------------------------
 
 if st.button("💡 Show Hint"):
-    st.info(question["hint"])
     st.session_state.hint_used = True
-    # minor penalty for using hint
+    st.info(question["hint"])
     st.session_state.xp = max(st.session_state.xp - 5, 0)
-    st.write("(-5 XP for using hint)")
+    st.write("(-5 XP for using a hint)")
 
-# ---------------------------------
+# ------------------------------------------------------------
 # NEXT QUESTION
-# ---------------------------------
+# ------------------------------------------------------------
 
-if st.button("Next"):
-
+if st.button("Next Question"):
     if st.session_state.answered:
-
         st.session_state.lab_question += 1
         st.session_state.answered = False
 
-        # Reset timer only after completing the 5 questions
         if st.session_state.lab_question >= 5:
             st.success("🎊 Lab Completed!")
-            st.session_state.xp += 50  # reward bonus
+            st.session_state.xp += 50  # bonus for finishing lab
             st.session_state.lab += 1
             st.session_state.lab_question = 0
             st.session_state.level_start_time = time.time()
             st.session_state.hint_used = False
 
         st.rerun()
-
     else:
-        st.warning("Answer the question first!")
+        st.warning("Answer the question first.")
 
-# ---------------------------------
-# LOW LIVES WARNING
-# ---------------------------------
+# ------------------------------------------------------------
+# LOW LIVES ALERT
+# ------------------------------------------------------------
 
 if st.session_state.lives == 1:
-    st.warning("⚠ You are on your last life!")
+    st.warning("⚠ Last life! Be careful!")
 
-# ---------------------------------
+# ------------------------------------------------------------
 # GAME OVER
-# ---------------------------------
+# ------------------------------------------------------------
 
 if st.session_state.lives <= 0:
-    st.error("💀 Game Over — Try Again")
+    st.error("💀 Game Over")
     if st.button("Restart Game"):
         st.session_state.xp = 0
         st.session_state.lab = 1
@@ -370,15 +353,15 @@ if st.session_state.lives <= 0:
         st.session_state.level_start_time = time.time()
         st.rerun()
 
-# ---------------------------------
-# GAME COMPLETION
-# ---------------------------------
+# ------------------------------------------------------------
+# GAME COMPLETE
+# ------------------------------------------------------------
 
 if st.session_state.lab > 5:
     st.success("🏆 Electrolysis Master!")
     st.balloons()
-    st.write("🎖 Final Badges:", badges)
+    st.write("🎖 Badges Earned:", badges)
     st.write("⚡ Total XP:", st.session_state.xp)
-    st.write("⭐ Stars Earned:", st.session_state.stars)
+    st.write("⭐ Stars:", st.session_state.stars)
     accuracy = round((st.session_state.stars / 25) * 100, 1)
-    st.write("📊 Success Rate:", str(accuracy) + "%")
+    st.write("📊 Lab Success Rate:", str(accuracy) + "%")
