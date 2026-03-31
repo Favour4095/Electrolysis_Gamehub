@@ -1,13 +1,13 @@
 import streamlit as st
-import random
 import time
+import random
 
 st.set_page_config(layout="wide")
 st.title("⚡ Electrolysis Quest – Virtual Lab")
 
-# ---------------------------
+# -----------------------
 # PLAYER STATE
-# ---------------------------
+# -----------------------
 if "xp" not in st.session_state:
     st.session_state.xp = 0
 if "lab" not in st.session_state:
@@ -18,200 +18,170 @@ if "stars" not in st.session_state:
     st.session_state.stars = 0
 if "streak" not in st.session_state:
     st.session_state.streak = 0
-if "current_question" not in st.session_state:
-    st.session_state.current_question = 0
-if "time_left" not in st.session_state:
-    st.session_state.time_left = 300  # 5 minutes per lab
-if "badge" not in st.session_state:
-    st.session_state.badge = ""
+if "lab_start_time" not in st.session_state:
+    st.session_state.lab_start_time = time.time()
+if "question_index" not in st.session_state:
+    st.session_state.question_index = 0
+if "answers" not in st.session_state:
+    st.session_state.answers = {}
 
-# ---------------------------
+# -----------------------
 # LAB DATA (5 labs × 5 questions)
-# ---------------------------
+# -----------------------
 labs = {
     1: {
         "name": "Ion Movement",
         "electrolyte": "NaCl",
         "questions": [
-            ("Which ion goes to the cathode?", "Na⁺"),
-            ("Which ion goes to the anode?", "Cl⁻"),
-            ("What charge does Na⁺ have?", "Positive"),
-            ("What charge does Cl⁻ have?", "Negative"),
-            ("At which electrode does reduction occur?", "Cathode"),
-        ],
+            {"question": "Which ion moves to the cathode?", "options":["Na⁺","Cl⁻"], "answer":"Na⁺", "hint":"Positive ions go to negative electrode"},
+            {"question": "Which ion moves to the anode?", "options":["Na⁺","Cl⁻"], "answer":"Cl⁻", "hint":"Negative ions go to positive electrode"},
+            {"question": "What happens at the cathode?", "options":["Oxidation","Reduction"], "answer":"Reduction", "hint":"Cathode is negative"},
+            {"question": "What happens at the anode?", "options":["Oxidation","Reduction"], "answer":"Oxidation", "hint":"Anode is positive"},
+            {"question": "Which gas is released at anode?", "options":["Hydrogen","Chlorine"], "answer":"Chlorine", "hint":"Cl⁻ loses electrons"}
+        ]
     },
     2: {
         "name": "Copper Sulphate",
         "electrolyte": "CuSO₄",
         "questions": [
-            ("Ion at cathode?", "Cu²⁺"),
-            ("Ion at anode?", "SO₄²⁻"),
-            ("Which ion is reduced?", "Cu²⁺"),
-            ("Which ion is oxidized?", "SO₄²⁻"),
-            ("Electrode where oxidation occurs?", "Anode"),
-        ],
+            {"question":"Which ion moves to the cathode?","options":["Cu²⁺","SO₄²⁻"],"answer":"Cu²⁺","hint":"Metal ions are reduced at cathode"},
+            {"question":"Which ion moves to the anode?","options":["Cu²⁺","SO₄²⁻"],"answer":"SO₄²⁻","hint":"Negative ions go to anode"},
+            {"question":"What happens at cathode?","options":["Oxidation","Reduction"],"answer":"Reduction","hint":"Electrons gained"},
+            {"question":"What happens at anode?","options":["Oxidation","Reduction"],"answer":"Oxidation","hint":"Electrons lost"},
+            {"question":"What is deposited at cathode?","options":["Copper","Sulphur"],"answer":"Copper","hint":"Metal plates out"}
+        ]
     },
     3: {
         "name": "Dilute Acid",
         "electrolyte": "H₂SO₄",
         "questions": [
-            ("Ion at cathode?", "H⁺"),
-            ("Ion at anode?", "SO₄²⁻"),
-            ("Which ion is reduced?", "H⁺"),
-            ("Electrode where oxidation occurs?", "Anode"),
-            ("Charge of H⁺?", "Positive"),
-        ],
+            {"question":"Which ion moves to cathode?","options":["H⁺","SO₄²⁻"],"answer":"H⁺","hint":"Positive ions go to negative electrode"},
+            {"question":"Which ion moves to anode?","options":["H⁺","SO₄²⁻"],"answer":"SO₄²⁻","hint":"Negative ions go to positive electrode"},
+            {"question":"Gas released at cathode?","options":["H₂","O₂"],"answer":"H₂","hint":"Hydrogen liberated"},
+            {"question":"Gas released at anode?","options":["H₂","O₂"],"answer":"O₂","hint":"Oxygen liberated"},
+            {"question":"Electrolyte contains?","options":["Acid","Base"],"answer":"Acid","hint":"H₂SO₄ is acidic"}
+        ]
     },
     4: {
         "name": "Brine",
         "electrolyte": "NaCl(aq)",
         "questions": [
-            ("Ion at cathode?", "H⁺"),
-            ("Ion at anode?", "Cl⁻"),
-            ("Electrode where reduction occurs?", "Cathode"),
-            ("Electrode where oxidation occurs?", "Anode"),
-            ("Which ion is positive?", "H⁺"),
-        ],
+            {"question":"Ion at cathode?","options":["H⁺","Cl⁻"],"answer":"H⁺","hint":"Hydrogen reduced"},
+            {"question":"Ion at anode?","options":["H⁺","Cl⁻"],"answer":"Cl⁻","hint":"Chlorine oxidized"},
+            {"question":"Gas at cathode?","options":["H₂","O₂"],"answer":"H₂","hint":"Hydrogen gas forms"},
+            {"question":"Gas at anode?","options":["Cl₂","O₂"],"answer":"Cl₂","hint":"Chlorine gas"},
+            {"question":"Reaction type?","options":["Electrolysis","Neutralization"],"answer":"Electrolysis","hint":"Electric current splits ions"}
+        ]
     },
     5: {
         "name": "WAEC Challenge",
         "electrolyte": "Mixed Cell",
         "questions": [
-            ("Ion at cathode?", "Cu²⁺"),
-            ("Ion at anode?", "Cl⁻"),
-            ("Electrode for reduction?", "Cathode"),
-            ("Electrode for oxidation?", "Anode"),
-            ("Charge of Cl⁻?", "Negative"),
-        ],
-    },
+            {"question":"Ion at cathode?","options":["Cu²⁺","Na⁺"],"answer":"Cu²⁺","hint":"Metal ion reduced"},
+            {"question":"Ion at anode?","options":["Cl⁻","SO₄²⁻"],"answer":"Cl⁻","hint":"Halide oxidized"},
+            {"question":"What is plated out?","options":["Copper","Sodium"],"answer":"Copper","hint":"Cu²⁺ gains electrons"},
+            {"question":"Gas at anode?","options":["Cl₂","O₂"],"answer":"Cl₂","hint":"Chlorine liberated"},
+            {"question":"Reaction type?","options":["Electrolysis","Displacement"],"answer":"Electrolysis","hint":"Current splits ions"}
+        ]
+    }
 }
 
 lab = labs[st.session_state.lab]
-total_questions = len(lab["questions"])
 
-# ---------------------------
+# -----------------------
 # SIDEBAR PLAYER PANEL
-# ---------------------------
-st.sidebar.title("Player")
-st.sidebar.metric("Energy ⚡", st.session_state.xp)
+# -----------------------
+st.sidebar.title("Player Stats")
+st.sidebar.metric("XP ⚡", st.session_state.xp)
 st.sidebar.metric("Lives ❤️", st.session_state.lives)
 st.sidebar.metric("Stars ⭐", st.session_state.stars)
 st.sidebar.metric("Streak 🔥", st.session_state.streak)
-st.sidebar.metric("Badge 🏅", st.session_state.badge)
 
-# ---------------------------
-# LAB PROGRESS
-# ---------------------------
-st.subheader("Lab Progress")
-cols = st.columns(5)
-for i in range(1, 6):
-    if i < st.session_state.lab:
-        cols[i - 1].success("✔")
-    elif i == st.session_state.lab:
-        cols[i - 1].info("Current")
-    else:
-        cols[i - 1].write("🔒")
+# -----------------------
+# LAB TIMER
+# -----------------------
+time_elapsed = time.time() - st.session_state.lab_start_time
+time_left = max(300 - int(time_elapsed), 0)  # 5 min = 300 sec
+minutes = time_left // 60
+seconds = time_left % 60
+st.subheader(f"⏱ Lab Timer: {minutes:02d}:{seconds:02d}")
+st.progress(time_left / 300)
 
-# ---------------------------
-# LAB INFO
-# ---------------------------
-st.subheader(f"Lab {st.session_state.lab}: {lab['name']}")
-st.info(f"Electrolyte: {lab['electrolyte']}")
-
-# ---------------------------
-# COUNTDOWN TIMER
-# ---------------------------
-if st.session_state.time_left > 0:
-    st.subheader("⏱ Lab Timer")
-    st.progress(st.session_state.time_left / 300)
-    st.session_state.time_left -= 1
-    st.experimental_rerun()
-else:
+if time_left == 0:
     st.error("⏱ Time's up!")
     st.session_state.lives -= 1
-    st.session_state.time_left = 300
+    st.session_state.lab_start_time = time.time()
     st.experimental_rerun()
 
-# ---------------------------
-# CURRENT QUESTION
-# ---------------------------
-question_text, correct_answer = lab["questions"][st.session_state.current_question]
-st.write(f"**Q{st.session_state.current_question+1}: {question_text}**")
+# -----------------------
+# QUESTION DISPLAY
+# -----------------------
+question_data = lab["questions"][st.session_state.question_index]
+st.subheader(f"Lab {st.session_state.lab}: {lab['name']}")
+st.info(f"Electrolyte: {lab['electrolyte']}")
+st.write(f"Q{st.session_state.question_index + 1}: {question_data['question']}")
 
-answer = st.text_input("Your answer here:")
+selected_option = st.radio("Select your answer:", question_data["options"], key=f"q{st.session_state.question_index}")
 
-# ---------------------------
-# HINT
-# ---------------------------
-if st.button("Hint"):
-    st.info(f"Hint: The correct answer starts with '{correct_answer[0]}'")
-    st.session_state.xp -= 5
+# Hint system
+if st.button("Show Hint"):
+    st.warning(question_data["hint"])
+    st.session_state.xp = max(st.session_state.xp - 5, 0)
 
-# ---------------------------
-# SUBMIT ANSWER
-# ---------------------------
-if st.button("Submit Answer"):
-    if answer.strip().lower() == correct_answer.strip().lower():
-        st.success("✅ Correct!")
-        st.session_state.xp += 10
-        st.session_state.stars += 1
-        st.session_state.streak += 1
-    else:
-        st.error(f"❌ Wrong! Correct answer: {correct_answer}")
-        st.session_state.lives -= 1
-        st.session_state.streak = 0
+# -----------------------
+# NAVIGATION BUTTONS
+# -----------------------
+col1, col2, col3 = st.columns(3)
 
-# ---------------------------
-# NEXT / PREVIOUS BUTTONS
-# ---------------------------
-col1, col2 = st.columns(2)
 with col1:
-    if st.button("Previous Question") and st.session_state.current_question > 0:
-        st.session_state.current_question -= 1
+    if st.button("Previous Question") and st.session_state.question_index > 0:
+        st.session_state.question_index -= 1
         st.experimental_rerun()
+
 with col2:
-    if st.button("Next Question"):
-        if st.session_state.current_question < total_questions - 1:
-            st.session_state.current_question += 1
+    if st.button("Submit Answer"):
+        if selected_option == question_data["answer"]:
+            st.success("✅ Correct!")
+            st.session_state.xp += 10
+            st.session_state.stars += 1
+            st.session_state.streak += 1
         else:
-            st.success("🎉 Lab Complete!")
-            # Award badge based on streak
-            if st.session_state.streak >= 5:
-                st.session_state.badge = "Lab Master 🏅"
-            st.session_state.lab += 1
-            st.session_state.current_question = 0
-            st.session_state.time_left = 300
+            st.error(f"❌ Wrong! Correct answer: {question_data['answer']}")
+            st.session_state.lives -= 1
+            st.session_state.streak = 0
+
+        # Move to next question
+        if st.session_state.question_index < 4:
+            st.session_state.question_index += 1
+        else:
+            st.success("🎉 Lab Completed!")
         st.experimental_rerun()
 
-# ---------------------------
-# MASTER LEVEL
-# ---------------------------
-st.subheader("Mastery Level")
-st.progress(min(st.session_state.xp / 250, 1.0))
+with col3:
+    if st.button("Next Lab") and st.session_state.lab < 5:
+        st.session_state.lab += 1
+        st.session_state.question_index = 0
+        st.session_state.lab_start_time = time.time()
+        st.experimental_rerun()
 
-# ---------------------------
-# ACHIEVEMENTS
-# ---------------------------
-st.subheader("Achievements")
+# -----------------------
+# ACHIEVEMENTS / BADGES
+# -----------------------
+st.subheader("Achievements / Badges")
 if st.session_state.stars >= 2:
     st.write("⭐ Ion Handler")
-if st.session_state.stars >= 4:
-    st.write("⚡ Lab Expert")
 if st.session_state.stars >= 5:
+    st.write("⚡ Lab Expert")
+if st.session_state.stars >= 10:
     st.write("🏆 Electrolysis Master")
 
-# ---------------------------
+# -----------------------
 # GAME OVER
-# ---------------------------
+# -----------------------
 if st.session_state.lives <= 0:
-    st.error("Game Over")
-    if st.button("Restart Game"):
-        st.session_state.xp = 0
+    st.error("💀 Game Over!")
+    if st.button("Restart"):
+        for key in ["xp","lab","lives","stars","streak","question_index","lab_start_time"]:
+            st.session_state[key] = 0 if key != "lab_start_time" else time.time()
         st.session_state.lab = 1
-        st.session_state.lives = 3
-        st.session_state.stars = 0
-        st.session_state.streak = 0
-        st.session_state.current_question = 0
-        st.session_state.time_left = 300
-        st.session_state.badge = ""
         st.experimental_rerun()
