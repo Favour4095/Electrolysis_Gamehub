@@ -1,5 +1,4 @@
 import streamlit as st
-import random
 
 st.set_page_config(layout="wide")
 
@@ -28,105 +27,159 @@ if "lab_question" not in st.session_state:
 if "answered" not in st.session_state:
     st.session_state.answered=False
 
-# LAB DATA
+# LAB QUESTION BANK
 
 labs={
 
 1:{
-"name":"Ion Movement",
-"electrolyte":"NaCl",
+"name":"Electrolysis Foundations",
 
 "questions":[
 
-{"ions":[("Na⁺","Cathode"),("Cl⁻","Anode")],
+{"type":"placement",
+"question":"Place Na⁺ and Cl⁻",
+"ions":[("Na⁺","Cathode"),("Cl⁻","Anode")],
 "hint":"Positive ions go to cathode"},
 
-{"ions":[("H⁺","Cathode"),("Cl⁻","Anode")],
-"hint":"Hydrogen forms at cathode"},
+{"type":"placement",
+"question":"Place K⁺ and Br⁻",
+"ions":[("K⁺","Cathode"),("Br⁻","Anode")],
+"hint":"Cations move to cathode"},
 
-{"ions":[("K⁺","Cathode"),("Br⁻","Anode")],
-"hint":"Metals move to cathode"},
+{"type":"mcq",
+"question":"Which electrode is positive?",
+"options":["Cathode","Anode","Electrolyte","Wire"],
+"answer":"Anode",
+"hint":"Oxidation occurs there"},
 
-{"ions":[("Ag⁺","Cathode"),("NO₃⁻","Anode")],
-"hint":"Silver deposits"},
+{"type":"mcq",
+"question":"Which is a cation?",
+"options":["Cl⁻","SO₄²⁻","Na⁺","OH⁻"],
+"answer":"Na⁺",
+"hint":"Cations are positive"},
 
-{"ions":[("Cu²⁺","Cathode"),("Cl⁻","Anode")],
-"hint":"Copper is reduced"}
+{"type":"mcq",
+"question":"Which occurs at cathode?",
+"options":["Oxidation","Reduction","Heating","Neutralisation"],
+"answer":"Reduction",
+"hint":"Gain electrons"}
 
 ]
 
 },
 
 2:{
-"name":"Copper Sulphate",
-"electrolyte":"CuSO₄",
+"name":"Products",
 
 "questions":[
 
-{"ions":[("Cu²⁺","Cathode"),("SO₄²⁻","Anode")],
-"hint":"Copper plates out"},
+{"type":"mcq",
+"question":"Product at cathode in dilute acid?",
+"options":["Oxygen","Hydrogen","Sulfur","Water"],
+"answer":"Hydrogen",
+"hint":"H⁺ gains electrons"},
 
-{"ions":[("H⁺","Cathode"),("SO₄²⁻","Anode")],
-"hint":"Hydrogen may form"},
+{"type":"mcq",
+"question":"Product at cathode in CuSO₄?",
+"options":["Copper","Hydrogen","Oxygen","Sulfur"],
+"answer":"Copper",
+"hint":"Less reactive metal deposits"},
 
-{"ions":[("Cu²⁺","Cathode"),("OH⁻","Anode")],
-"hint":"Oxygen may form"},
+{"type":"mcq",
+"question":"Product at anode in brine?",
+"options":["Hydrogen","Sodium","Chlorine","Copper"],
+"answer":"Chlorine",
+"hint":"Cl⁻ loses electrons"},
 
-{"ions":[("Cu²⁺","Cathode"),("Cl⁻","Anode")],
-"hint":"Copper still deposits"},
+{"type":"mcq",
+"question":"Gas at anode in water electrolysis?",
+"options":["Hydrogen","Oxygen","Nitrogen","Chlorine"],
+"answer":"Oxygen",
+"hint":"OH⁻ forms oxygen"},
 
-{"ions":[("H⁺","Cathode"),("OH⁻","Anode")],
-"hint":"Water electrolysis"}
+{"type":"mcq",
+"question":"What happens to CuSO₄ cathode?",
+"options":["Gets thinner","Gets coated","No change","Breaks"],
+"answer":"Gets coated",
+"hint":"Copper deposits"}
 
 ]
 
 },
 
 3:{
-"name":"Dilute Acid",
-"electrolyte":"H₂SO₄",
+"name":"Discharge Factors",
 
 "questions":[
 
-{"ions":[("H⁺","Cathode"),("SO₄²⁻","Anode")],
-"hint":"Hydrogen forms"},
+{"type":"mcq",
+"question":"Why hydrogen forms instead of sodium?",
+"options":["Inactive","Easier reduction","Disappears","No reason"],
+"answer":"Easier reduction",
+"hint":"Reactivity series"},
 
-{"ions":[("H⁺","Cathode"),("OH⁻","Anode")],
-"hint":"Water splits"},
+{"type":"mcq",
+"question":"Main discharge factor?",
+"options":["Colour","Series","Shape","Light"],
+"answer":"Series",
+"hint":"Electrochemical series"},
 
-{"ions":[("Na⁺","Cathode"),("SO₄²⁻","Anode")],
-"hint":"Na stays in solution"},
+{"type":"mcq",
+"question":"Which affects product?",
+"options":["Concentration","Bottle","Wire colour","Room"],
+"answer":"Concentration",
+"hint":"More ions discharge"},
 
-{"ions":[("H⁺","Cathode"),("Cl⁻","Anode")],
-"hint":"Acid behaviour"},
+{"type":"mcq",
+"question":"Electrode type affects?",
+"options":["Voltage","Products","Colour","Shape"],
+"answer":"Products",
+"hint":"Active electrodes react"},
 
-{"ions":[("H⁺","Cathode"),("NO₃⁻","Anode")],
-"hint":"Hydrogen forms"}
+{"type":"mcq",
+"question":"Which discharges first?",
+"options":["Cu²⁺","H⁺"],
+"answer":"Cu²⁺",
+"hint":"Copper below hydrogen"}
 
 ]
 
 },
 
 4:{
-"name":"Brine",
-"electrolyte":"NaCl(aq)",
+"name":"Applications",
 
 "questions":[
 
-{"ions":[("H⁺","Cathode"),("Cl⁻","Anode")],
-"hint":"Chlorine forms"},
+{"type":"mcq",
+"question":"Electroplating purpose?",
+"options":["Destroy","Coat","Melt","Clean"],
+"answer":"Coat",
+"hint":"Protective layer"},
 
-{"ions":[("Na⁺","Cathode"),("Cl⁻","Anode")],
-"hint":"Na does not discharge"},
+{"type":"mcq",
+"question":"Object plated is?",
+"options":["Anode","Cathode","Electrolyte","Cell"],
+"answer":"Cathode",
+"hint":"Metal deposits there"},
 
-{"ions":[("H⁺","Cathode"),("OH⁻","Anode")],
-"hint":"Oxygen possible"},
+{"type":"mcq",
+"question":"Electrolysis used for?",
+"options":["Cooking","Aluminium extraction","Boiling","Freezing"],
+"answer":"Aluminium extraction",
+"hint":"Bauxite process"},
 
-{"ions":[("H⁺","Cathode"),("Cl⁻","Anode")],
-"hint":"Hydrogen gas forms"},
+{"type":"mcq",
+"question":"Pure copper forms at?",
+"options":["Cathode","Anode","Wire","Switch"],
+"answer":"Cathode",
+"hint":"Purification"},
 
-{"ions":[("Na⁺","Cathode"),("OH⁻","Anode")],
-"hint":"Na remains dissolved"}
+{"type":"mcq",
+"question":"Electrolysis produces?",
+"options":["Electricity","Chemicals","Sand","Heat"],
+"answer":"Chemicals",
+"hint":"Industrial use"}
 
 ]
 
@@ -134,24 +187,38 @@ labs={
 
 5:{
 "name":"WAEC Challenge",
-"electrolyte":"Mixed Cell",
 
 "questions":[
 
-{"ions":[("Cu²⁺","Cathode"),("Cl⁻","Anode")],
-"hint":"Less reactive metal deposits"},
+{"type":"mcq",
+"question":"Product at cathode molten NaCl?",
+"options":["Sodium","Hydrogen","Chlorine","Oxygen"],
+"answer":"Sodium",
+"hint":"No water present"},
 
-{"ions":[("Ag⁺","Cathode"),("NO₃⁻","Anode")],
-"hint":"Silver deposits"},
+{"type":"mcq",
+"question":"Product cathode aqueous NaCl?",
+"options":["Sodium","Hydrogen","Chlorine","Oxygen"],
+"answer":"Hydrogen",
+"hint":"Water competes"},
 
-{"ions":[("H⁺","Cathode"),("SO₄²⁻","Anode")],
-"hint":"Hydrogen gas forms"},
+{"type":"mcq",
+"question":"Why chlorine forms?",
+"options":["Colour","High chloride","Heat","Glass"],
+"answer":"High chloride",
+"hint":"Concentration effect"},
 
-{"ions":[("Cu²⁺","Cathode"),("OH⁻","Anode")],
-"hint":"Copper reduces"},
+{"type":"mcq",
+"question":"Which loses electrons?",
+"options":["Cation","Anion","Metal","Water"],
+"answer":"Anion",
+"hint":"Oxidation"},
 
-{"ions":[("H⁺","Cathode"),("Cl⁻","Anode")],
-"hint":"Chlorine forms"}
+{"type":"mcq",
+"question":"Why inert electrodes?",
+"options":["Cheap","Do not react","Heavy","Magnetic"],
+"answer":"Do not react",
+"hint":"Graphite"}
 
 ]
 
@@ -163,96 +230,39 @@ lab=labs[st.session_state.lab]
 
 question=lab["questions"][st.session_state.lab_question]
 
-ions=[
-question["ions"][0][0],
-question["ions"][1][0]
-]
-
-# SIDEBAR
-
-st.sidebar.title("Player")
+# PLAYER PANEL
 
 st.sidebar.metric("XP ⚡",st.session_state.xp)
-
 st.sidebar.metric("Lives ❤️",st.session_state.lives)
-
 st.sidebar.metric("Stars ⭐",st.session_state.stars)
 
-st.sidebar.metric("Streak 🔥",st.session_state.streak)
+# LAB HEADER
 
-# LAB MAP
-
-st.subheader("Lab Progress")
-
-cols=st.columns(5)
-
-for i in range(1,6):
-
-    if i<st.session_state.lab:
-        cols[i-1].success("✔")
-
-    elif i==st.session_state.lab:
-        cols[i-1].info("Current")
-
-    else:
-        cols[i-1].write("🔒")
-
-# LAB INFO
-
-st.subheader(
-"Lab "+str(st.session_state.lab)+
-": "+lab["name"])
+st.subheader("Lab "+str(st.session_state.lab)+" : "+lab["name"])
 
 st.write(
 "Question",
 st.session_state.lab_question+1,
-"/5")
+"/5"
+)
 
-st.info(
-"Electrolyte: "+
-lab["electrolyte"])
+# QUESTION ENGINE
 
-# LAB UI
+if question["type"]=="placement":
 
-col1,col2,col3=st.columns(3)
+    st.write(question["question"])
 
-with col1:
+    ions=[i[0] for i in question["ions"]]
 
-    st.error("ANODE (+)")
+    col1,col2=st.columns(2)
 
-    anode=st.selectbox(
-    "Ion at anode",
-    ions)
+    with col1:
+        anode=st.selectbox("Anode",ions)
 
-with col2:
+    with col2:
+        cathode=st.selectbox("Cathode",ions)
 
-    st.info("Electrolyte")
-
-    st.write("Available ions")
-
-    st.write(ions[0])
-
-    st.write(ions[1])
-
-with col3:
-
-    st.success("CATHODE (-)")
-
-    cathode=st.selectbox(
-    "Ion at cathode",
-    ions)
-
-# HINT
-
-if st.button("💡 Hint"):
-
-    st.info(question["hint"])
-
-# RUN EXPERIMENT
-
-if st.button("Run Experiment"):
-
-    if st.session_state.answered==False:
+    if st.button("Run Experiment"):
 
         correct=0
 
@@ -266,13 +276,35 @@ if st.button("Run Experiment"):
 
         if correct==2:
 
-            st.success("Correct!")
+            st.success("Correct")
+
+            st.session_state.xp+=20
+
+            st.session_state.answered=True
+
+        else:
+
+            st.error("Wrong")
+
+            st.session_state.lives-=1
+
+# MCQ ENGINE
+
+if question["type"]=="mcq":
+
+    answer=st.radio(
+    question["question"],
+    question["options"])
+
+    if st.button("Submit Answer"):
+
+        if answer==question["answer"]:
+
+            st.success("Correct")
 
             st.balloons()
 
             st.session_state.xp+=20
-
-            st.session_state.stars+=1
 
             st.session_state.streak+=1
 
@@ -286,7 +318,13 @@ if st.button("Run Experiment"):
 
             st.session_state.streak=0
 
-# NEXT QUESTION
+# HINT
+
+if st.button("💡 Hint"):
+
+    st.info(question["hint"])
+
+# NEXT
 
 if st.button("Next Question"):
 
@@ -302,6 +340,8 @@ if st.button("Next Question"):
 
             st.session_state.xp+=50
 
+            st.session_state.stars+=1
+
             st.session_state.lab+=1
 
             st.session_state.lab_question=0
@@ -310,23 +350,7 @@ if st.button("Next Question"):
 
     else:
 
-        st.warning("Solve question first")
-
-# STREAK BONUS
-
-if st.session_state.streak>=3:
-
-    st.success("🔥 Streak Bonus +15 XP")
-
-    st.session_state.xp+=15
-
-    st.session_state.streak=0
-
-# XP BAR
-
-st.subheader("Mastery Level")
-
-st.progress(min(st.session_state.xp/500,1.0))
+        st.warning("Answer first")
 
 # GAME OVER
 
@@ -334,40 +358,10 @@ if st.session_state.lives<=0:
 
     st.error("Game Over")
 
-    if st.button("Restart"):
-
-        st.session_state.xp=0
-
-        st.session_state.lab=1
-
-        st.session_state.lives=3
-
-        st.session_state.stars=0
-
-        st.session_state.streak=0
-
-        st.session_state.lab_question=0
-
-        st.session_state.answered=False
-
-        st.rerun()
-
 # GAME COMPLETE
 
 if st.session_state.lab>5:
 
-    st.success("🏆 Electrolysis Master!")
+    st.success("🏆 Electrolysis Master")
 
     st.balloons()
-
-# LEARNING NOTES
-
-with st.expander("Lab Notes"):
-
-    st.write("Oxidation occurs at anode")
-
-    st.write("Reduction occurs at cathode")
-
-    st.write("Cations gain electrons")
-
-    st.write("Anions lose electrons")
