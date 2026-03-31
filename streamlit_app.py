@@ -6,7 +6,7 @@ import random
 st.set_page_config(page_title="Electrolysis Adventure",layout="wide")
 
 # LOAD CSV
-df = pd.read_csv("Questions.csv")
+df = pd.read_csv("electrolysis_questions.csv")
 
 # CLEAN COLUMN NAMES
 df.columns=df.columns.str.strip()
