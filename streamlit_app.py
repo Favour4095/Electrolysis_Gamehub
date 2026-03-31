@@ -46,11 +46,11 @@ labs = {
         "name": "Electrolysis Foundations",
         "questions": [
             {"type": "placement",
-             "question": "Place Na⁺ and Cl⁻",
+             "question": "Place Na⁺ and Cl⁻ on the correct electrode",
              "ions": [("Na⁺", "Cathode"), ("Cl⁻", "Anode")],
              "hint": "Positive ions go to cathode"},
             {"type": "placement",
-             "question": "Place K⁺ and Br⁻",
+             "question": "Place K⁺ and Br⁻ on the correct electrode",
              "ions": [("K⁺", "Cathode"), ("Br⁻", "Anode")],
              "hint": "Cations move to cathode"},
             {"type": "mcq",
